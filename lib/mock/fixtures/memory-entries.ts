@@ -1,0 +1,73 @@
+import type { MemoryEntry } from '@/types'
+import { MOCK_ORG_ID } from './organizations'
+
+const ORG = MOCK_ORG_ID
+
+export const mockMemoryEntries: MemoryEntry[] = [
+  {
+    id: 'mem-0000000000000000000000001',
+    organization_id: ORG,
+    entry_type: 'partner_interaction',
+    title: 'Salesforce BD call — AppExchange interest confirmed',
+    body: 'Spoke with Marcus Chen (ISV Partnerships, Salesforce) on 2026-03-12. He confirmed Salesforce is actively recruiting revenue intelligence tools to AppExchange. They want 3 reference customers before starting certification. Timeline: 8–10 weeks for full certification. Marcus will send over ISV program docs. Follow up by April 1.',
+    source: 'memory-agent',
+    related_company: 'Salesforce',
+    metadata: { contact: 'Marcus Chen', date: '2026-03-12', follow_up_date: '2026-04-01' },
+    created_at: '2026-03-12T17:00:00Z',
+  },
+  {
+    id: 'mem-0000000000000000000000002',
+    organization_id: ORG,
+    entry_type: 'learning',
+    title: 'G2 review campaigns drive 3x higher qualified leads vs. cold outreach',
+    body: 'Analysis of our last 90 days of lead sources: leads from G2 (organic profile views + review responses) convert to SQL at 18% vs. 6% for cold outbound. Cost per SQL from G2 is $340 vs. $890 from outbound. Recommendation: prioritize G2 optimization and review generation before scaling outbound.',
+    source: 'analytics-agent',
+    related_company: 'G2',
+    metadata: { data_period: '2026-02-01_to_2026-05-01', source_data: 'CRM analysis' },
+    created_at: '2026-05-02T10:00:00Z',
+  },
+  {
+    id: 'mem-0000000000000000000000003',
+    organization_id: ORG,
+    entry_type: 'observation',
+    title: 'Outreach.io recently launched an open partner program',
+    body: 'Outreach announced a new partner ecosystem program on 2026-04-28 with a public API portal and a dedicated partner BD team. This significantly reduces the barrier to a technical integration. Their announcement mentions "sales intelligence" as a priority integration category — strong signal for us.',
+    source: 'research-agent',
+    related_company: 'Outreach',
+    metadata: { source_url: 'https://outreach.io/blog/partner-ecosystem-2026', date: '2026-04-28' },
+    created_at: '2026-04-29T09:00:00Z',
+  },
+  {
+    id: 'mem-0000000000000000000000004',
+    organization_id: ORG,
+    entry_type: 'partner_interaction',
+    title: 'HubSpot App Marketplace — initial outreach sent',
+    body: 'Sent initial partnership email to Sarah Park (HubSpot App Marketplace team) on 2026-05-09. No response yet. Follow up in 5 business days (2026-05-16). Note: HubSpot certification requires 50+ installs before enhanced placement.',
+    source: 'outreach-agent',
+    related_company: 'HubSpot',
+    metadata: { contact: 'Sarah Park', outreach_id: 'od-000000000000000000000000003' },
+    created_at: '2026-05-09T09:30:00Z',
+  },
+  {
+    id: 'mem-0000000000000000000000005',
+    organization_id: ORG,
+    entry_type: 'learning',
+    title: 'Enterprise sales teams prefer "show don\'t tell" in partnership pitches',
+    body: 'Pattern observed across 5 BD conversations in Q1 2026: partners respond better when we lead with a specific shared customer story rather than feature lists. The most effective opener: "We have [N] customers in common and they\'ve been asking for this integration." Converts cold outreach to meeting at 2.3x rate vs. generic value prop pitch.',
+    source: 'memory-agent',
+    related_company: null,
+    metadata: { sample_size: 5, time_period: 'Q1 2026' },
+    created_at: '2026-04-10T14:00:00Z',
+  },
+  {
+    id: 'mem-0000000000000000000000006',
+    organization_id: ORG,
+    entry_type: 'observation',
+    title: 'Gong raised $250M Series E — actively expanding partner ecosystem',
+    body: 'Gong announced a $250M Series E on 2026-03-20 with stated plans to build an "open revenue data platform." Their investor deck mentions 40+ planned integration partners in 2026. This is the right time to approach them — pre-ecosystem-lock-in.',
+    source: 'research-agent',
+    related_company: 'Gong',
+    metadata: { funding_amount: '$250M', round: 'Series E', date: '2026-03-20' },
+    created_at: '2026-03-21T10:00:00Z',
+  },
+]
