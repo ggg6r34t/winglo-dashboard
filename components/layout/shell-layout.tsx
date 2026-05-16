@@ -1,31 +1,40 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { TopBar } from "./top-bar";
 import { Sidebar } from "./sidebar";
-import { useSidebarStore } from "@/lib/stores/sidebar-store";
+import { RightPanel } from "./right-panel";
+import { TopBar } from "./top-bar";
 
 export function ShellLayout({
   children,
-  agentStatusSlot,
 }: {
   children: React.ReactNode;
-  agentStatusSlot?: React.ReactNode;
+  agentStatusSlot?: React.ReactNode; // kept for backwards compat, unused
 }) {
-  const { collapsed } = useSidebarStore();
-
   return (
-    <div className="min-h-screen bg-[var(--background)]">
-      <TopBar agentStatusSlot={agentStatusSlot} />
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "var(--sidebar-w) 1fr var(--rightpanel-w)",
+        height: "100vh",
+        minHeight: 600,
+        overflow: "hidden",
+      }}
+    >
       <Sidebar />
-      <motion.main
-        layout
-        animate={{ marginLeft: collapsed ? 52 : 220 }}
-        transition={{ duration: 0.15, ease: "easeInOut" }}
-        className="pt-[52px] min-h-screen"
+      <main
+        style={{
+          background: "var(--bg-0)",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 0,
+        }}
       >
-        <div className="max-w-[1280px] mx-auto px-6 py-6">{children}</div>
-      </motion.main>
+        <TopBar />
+        <div style={{ overflowY: "auto", flex: 1, minHeight: 0 }}>
+          {children}
+        </div>
+      </main>
+      <RightPanel />
     </div>
   );
 }

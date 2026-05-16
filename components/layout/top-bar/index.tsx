@@ -1,35 +1,149 @@
-import { Separator } from '@/components/ui/separator'
-import { OrgSwitcher } from './org-switcher'
-import { NotificationBell } from './notification-bell'
-import { UserMenu } from './user-menu'
+"use client";
 
-export function TopBar({ agentStatusSlot }: { agentStatusSlot?: React.ReactNode }) {
+import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+
+function buildCrumbs(pathname: string): string[] {
+  if (pathname.startsWith("/agents/")) {
+    const slug = pathname.split("/")[2] ?? "";
+    const names: Record<string, string> = {
+      "growth":            "Atlas (Growth)",
+      "social-media":      "Lyra (Social Media)",
+      "seo":               "Vega (SEO)",
+      "marketing":         "Orion (Marketing)",
+      "sales":             "Hale (Sales)",
+      "telehealth":        "Mira (Telehealth)",
+      "analytics-manager": "Cael (Analytics)",
+      "research":          "Sable (Research)",
+      "outreach":          "Outreach",
+    };
+    return ["AI Employees", names[slug] ?? slug];
+  }
+  const labels: Record<string, string> = {
+    "/workspace":              "Overview",
+    "/workspace/inbox":        "Inbox",
+    "/workspace/approvals":    "Approvals",
+    "/workspace/reports":      "Reports",
+    "/workspace/analytics":    "Analytics",
+    "/workspace/workflows":    "Workflows",
+    "/workspace/memory":       "Memory",
+    "/workspace/integrations": "Integrations",
+    "/workspace/audit":        "Audit log",
+  };
+  return [labels[pathname] ?? "Workspace"];
+}
+
+function IconBtn({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex items-center h-[52px] px-4 bg-[var(--surface)] border-b border-[var(--border-color)]">
-      {/* Left */}
-      <div className="flex items-center gap-2">
-        <OrgSwitcher />
-        <Separator orientation="vertical" className="h-4 bg-[var(--border-color)]" />
+    <button
+      title={title}
+      style={{
+        width: 28, height: 28,
+        display: "grid", placeItems: "center",
+        background: "transparent",
+        border: "1px solid transparent",
+        borderRadius: "var(--r-sm)",
+        color: "var(--fg-2)",
+        cursor: "pointer",
+        transition: "all 120ms ease",
+      }}
+      onMouseEnter={e => {
+        const b = e.currentTarget as HTMLButtonElement;
+        b.style.background = "var(--bg-2)";
+        b.style.borderColor = "var(--line-1)";
+        b.style.color = "var(--fg-0)";
+      }}
+      onMouseLeave={e => {
+        const b = e.currentTarget as HTMLButtonElement;
+        b.style.background = "transparent";
+        b.style.borderColor = "transparent";
+        b.style.color = "var(--fg-2)";
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function TopBar() {
+  const pathname = usePathname();
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    const update = () =>
+      setTime(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+    update();
+    const id = setInterval(update, 30_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const crumbs = buildCrumbs(pathname);
+
+  return (
+    <header
+      style={{
+        height: "var(--header-h)",
+        flexShrink: 0,
+        borderBottom: "1px solid var(--line-1)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 20px",
+        background: "var(--bg-0)",
+        position: "sticky",
+        top: 0,
+        zIndex: 5,
+        backdropFilter: "blur(8px)",
+      }}
+    >
+      {/* Breadcrumbs */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--fg-1)" }}>
+        <span>Winglo HQ</span>
+        {crumbs.map((label, i) => (
+          <span key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ color: "var(--fg-3)" }}>/</span>
+            <span style={{
+              color: i === crumbs.length - 1 ? "var(--fg-0)" : "var(--fg-1)",
+              fontWeight: i === crumbs.length - 1 ? 500 : 400,
+            }}>{label}</span>
+          </span>
+        ))}
       </div>
 
-      {/* Center */}
-      <div className="flex-1 flex items-center justify-center">
-        <button className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-[var(--border-color)] bg-[var(--surface-raised)] text-sm text-[var(--text-muted)] hover:border-[var(--border-strong)] transition-colors w-64">
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      {/* Right: live clock + icon buttons */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: 11.5,
+          color: "var(--fg-2)",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}>
+          <span style={{
+            display: "inline-block",
+            width: 6, height: 6,
+            borderRadius: "50%",
+            background: "var(--accent)",
+            animation: "winglo-pulse 2.4s ease-out infinite",
+          }} />
+          <span>live · {time} PT</span>
+        </div>
+
+        <IconBtn title="Layers">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m12 3 9 5-9 5-9-5z" />
+            <path d="m3 13 9 5 9-5" />
           </svg>
-          <span>Search...</span>
-          <span className="ml-auto text-xs border border-[var(--border-color)] rounded px-1 py-0.5">⌘K</span>
-        </button>
-      </div>
+        </IconBtn>
 
-      {/* Right */}
-      <div className="flex items-center gap-1">
-        {agentStatusSlot}
-        <Separator orientation="vertical" className="h-4 bg-[var(--border-color)] mx-1" />
-        <NotificationBell />
-        <UserMenu />
+        <IconBtn title="Notifications">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 8a6 6 0 0 1 12 0v5l2 3H4l2-3z" />
+            <path d="M10 19a2 2 0 0 0 4 0" />
+          </svg>
+        </IconBtn>
       </div>
     </header>
-  )
+  );
 }

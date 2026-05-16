@@ -1,99 +1,139 @@
 @import "tailwindcss";
 
-/* Dark mode via .dark class on <html> */
-@custom-variant dark (&:where(.dark, .dark *));
-
-/* ── Design tokens ────────────────────────────────────── */
+/* ── Winglo Design System ─────────────────────────────── */
 @theme inline {
-  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Background layers */
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-surface-raised: var(--surface-raised);
-
-  /* Borders */
-  --color-border: var(--border-color);
-  --color-border-strong: var(--border-strong);
-
-  /* Text */
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-
-  /* Accent */
+  /* Map Winglo tokens into Tailwind utilities */
+  --color-background: var(--bg-0);
+  --color-surface: var(--bg-1);
+  --color-surface-raised: var(--bg-2);
+  --color-border: var(--line-1);
+  --color-border-strong: var(--line-2);
+  --color-text-primary: var(--fg-0);
+  --color-text-secondary: var(--fg-1);
+  --color-text-muted: var(--fg-3);
   --color-accent: var(--accent);
-  --color-accent-subtle: var(--accent-subtle);
-
-  /* Semantic */
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-destructive: #ef4444;
-  --color-info: #3b82f6;
+  --color-accent-subtle: var(--accent-soft);
+  --color-success: var(--ok);
+  --color-warning: var(--warn);
+  --color-destructive: var(--bad);
+  --color-info: var(--info);
 }
 
-/* ── Dark mode (default) ──────────────────────────────── */
 :root {
-  --background: #0a0a0a;
-  --surface: #111111;
-  --surface-raised: #161616;
-  --border-color: #1f1f1f;
-  --border-strong: #2a2a2a;
-  --text-primary: #f4f4f5;
-  --text-secondary: #a1a1aa;
-  --text-muted: #52525b;
-  --accent: #6366f1;
-  --accent-subtle: #1e1b4b;
-}
+  /* ── Surfaces — cool-neutral 250° hue ──────────────── */
+  --bg-0: oklch(0.145 0.004 250);
+  --bg-1: oklch(0.175 0.005 250);
+  --bg-2: oklch(0.205 0.006 250);
+  --bg-3: oklch(0.235 0.007 250);
+  --bg-4: oklch(0.275 0.008 250);
+  --bg-overlay: oklch(0.16 0.005 250 / 0.72);
 
-/* ── Light mode ───────────────────────────────────────── */
-.light {
-  --background: #ffffff;
-  --surface: #f9f9f9;
-  --surface-raised: #f0f0f0;
-  --border-color: #e4e4e7;
-  --border-strong: #d4d4d8;
-  --text-primary: #09090b;
-  --text-secondary: #71717a;
-  --text-muted: #a1a1aa;
-  --accent: #6366f1;
-  --accent-subtle: #eef2ff;
+  /* ── Borders — hairlines ────────────────────────────── */
+  --line-1: oklch(0.255 0.008 250);
+  --line-2: oklch(0.305 0.009 250);
+  --line-3: oklch(0.36 0.01 250);
+
+  /* ── Text ───────────────────────────────────────────── */
+  --fg-0: oklch(0.965 0.003 250);
+  --fg-1: oklch(0.78 0.005 250);
+  --fg-2: oklch(0.60 0.006 250);
+  --fg-3: oklch(0.45 0.006 250);
+  --fg-4: oklch(0.36 0.006 250);
+
+  /* ── Accent — warm amber (live / operational) ───────── */
+  --accent: oklch(0.80 0.12 75);
+  --accent-soft: oklch(0.80 0.12 75 / 0.14);
+  --accent-line: oklch(0.80 0.12 75 / 0.35);
+
+  /* ── Semantic ────────────────────────────────────────── */
+  --ok: oklch(0.78 0.12 158);
+  --ok-soft: oklch(0.78 0.12 158 / 0.13);
+  --warn: oklch(0.82 0.13 80);
+  --warn-soft: oklch(0.82 0.13 80 / 0.13);
+  --bad: oklch(0.70 0.16 28);
+  --bad-soft: oklch(0.70 0.16 28 / 0.13);
+  --info: oklch(0.74 0.09 240);
+  --info-soft: oklch(0.74 0.09 240 / 0.13);
+  --violet: oklch(0.72 0.11 295);
+  --violet-soft: oklch(0.72 0.11 295 / 0.13);
+
+  /* ── Aliases for backwards-compatible Tailwind classes ── */
+  --background: var(--bg-0);
+  --surface: var(--bg-1);
+  --surface-raised: var(--bg-2);
+  --border-color: var(--line-1);
+  --border-strong: var(--line-2);
+  --text-primary: var(--fg-0);
+  --text-secondary: var(--fg-1);
+  --text-muted: var(--fg-3);
+  --accent-subtle: var(--accent-soft);
+
+  /* ── Layout ─────────────────────────────────────────── */
+  --sidebar-w: 256px;
+  --rightpanel-w: 340px;
+  --header-h: 48px;
+
+  /* ── Radii ───────────────────────────────────────────── */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 10px;
+  --r-xl: 14px;
 }
 
 /* ── Base styles ──────────────────────────────────────── */
 html {
   color-scheme: dark;
-}
-
-html.light {
-  color-scheme: light;
+  height: 100%;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--text-primary);
+  margin: 0;
+  height: 100%;
+  background-color: var(--bg-0);
+  color: var(--fg-0);
   font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  line-height: 1.45;
+  font-feature-settings: "ss01", "cv11", "cv02";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.005em;
 }
 
-/* ── Scrollbar styling ────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+#__next,
+[data-nextjs-root] {
+  height: 100%;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+::selection {
+  background: var(--accent-soft);
+  color: var(--fg-0);
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 3px;
+/* ── Scrollbar — minimal ──────────────────────────────── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--line-3); }
+
+/* ── Pulse animation ──────────────────────────────────── */
+@keyframes winglo-pulse {
+  0%   { box-shadow: 0 0 0 0 oklch(0.80 0.12 75 / 0.4); }
+  70%  { box-shadow: 0 0 0 6px oklch(0.80 0.12 75 / 0); }
+  100% { box-shadow: 0 0 0 0 oklch(0.80 0.12 75 / 0); }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+@keyframes winglo-pulse-soft {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.85); }
+}
+
+@keyframes winglo-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

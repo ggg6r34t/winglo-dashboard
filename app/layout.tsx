@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Winglo Growth Agent',
-  description: 'AI-powered Head of Growth & Partnerships',
+  title: 'Winglo — AI Workforce Operating System',
+  description: 'A centralized workspace for managing your AI workforce.',
 }
 
 export default function RootLayout({
@@ -26,9 +26,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable}`}
     >
-      <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--text-primary)]">
+      <body>
         <Providers>{children}</Providers>
       </body>
     </html>
