@@ -16,7 +16,7 @@ export default async function GrowthMemoryPage() {
       <div className="grid gap-6 lg:grid-cols-[1fr_360px] items-start">
         <div className="space-y-4">
           {entries.length === 0 ? (
-            <p className="text-sm text-text-muted py-8 text-center">
+            <p className="text-sm text-[var(--text-muted)] py-8 text-center">
               No memory entries yet. Capture your first note below.
             </p>
           ) : (

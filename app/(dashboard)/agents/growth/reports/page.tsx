@@ -24,7 +24,7 @@ export default async function GrowthReportsPage() {
 
       {/* Outreach drafts section */}
       <section className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3">
+        <p className="text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-3">
           Outreach drafts
         </p>
         {drafts.length === 0 ? (
@@ -50,14 +50,14 @@ export default async function GrowthReportsPage() {
       {/* Latest snapshot section */}
       {latestSnapshot && (
         <section>
-          <p className="text-xs font-semibold uppercase tracking-widest text-text-muted mb-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-3">
             Latest snapshot
           </p>
-          <div className="p-4 rounded-lg border border-border bg-surface max-w-2xl">
-            <p className="text-xs text-text-muted mb-2">
+          <div className="p-4 rounded-lg border border-[var(--border-color)] bg-[var(--surface)] max-w-2xl">
+            <p className="text-xs text-[var(--text-muted)] mb-2">
               {new Date(latestSnapshot.created_at).toLocaleDateString()}
             </p>
-            <p className="text-sm text-text-secondary">
+            <p className="text-sm text-[var(--text-secondary)]">
               Snapshot date: {latestSnapshot.snapshot_date}
             </p>
           </div>
