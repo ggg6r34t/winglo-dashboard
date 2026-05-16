@@ -26,7 +26,7 @@ describe('AgentHubLayout', () => {
         <div>content</div>
       </AgentHubLayout>
     )
-    expect(screen.getByText('Head of Growth & Partnerships')).toBeInTheDocument()
+    expect(screen.getByText('Atlas')).toBeInTheDocument()
   })
 
   it('renders tab labels', () => {

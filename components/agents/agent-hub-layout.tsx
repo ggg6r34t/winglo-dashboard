@@ -2,16 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
-import { AgentIdentityIcon } from './agent-identity-icon'
-import { AgentStatusBadge } from './agent-status-badge'
 import { useOrchestrationStore } from '@/features/orchestration/hooks/use-orchestration-store'
-import type { AgentConfig } from '@/lib/agents/registry'
-import type { AgentStatus } from './agent-status-badge'
+import { AGENT_MAP, AGENTS_LIST } from '@/components/workspace/page-agent-glyph'
+import type { AgentConfig, AgentSlug } from '@/lib/agents/registry'
 
 export interface HubTab {
   label: string
   href: string
+  count?: number
 }
 
 interface AgentHubLayoutProps {
@@ -20,11 +18,36 @@ interface AgentHubLayoutProps {
   children: React.ReactNode
 }
 
+const SLUG_TO_SHORT: Partial<Record<AgentSlug, string>> = {
+  'growth':            'growth',
+  'social-media':      'social',
+  'seo':               'seo',
+  'marketing':         'marketing',
+  'telehealth':        'telehealth',
+  'sales':             'sales',
+  'research':          'research',
+  'analytics-manager': 'analytics',
+}
+
+const PRESENCE_CLASS: Record<string, string> = {
+  active:        'live',
+  queued:        'wait',
+  idle:          'idle',
+  'not-deployed':'idle',
+}
+
+const STATUS_LABEL: Record<string, string> = {
+  active:        'running',
+  queued:        'queued',
+  idle:          'standing by',
+  'not-deployed':'not deployed',
+}
+
 export function AgentHubLayout({ agent, tabs, children }: AgentHubLayoutProps) {
   const pathname = usePathname()
   const agentStates = useOrchestrationStore(s => s.agentStates)
 
-  const status: AgentStatus = !agent.deployed
+  const liveStatus: string = !agent.deployed
     ? 'not-deployed'
     : Object.values(agentStates).some(s => s === 'executing')
       ? 'active'
@@ -32,29 +55,66 @@ export function AgentHubLayout({ agent, tabs, children }: AgentHubLayoutProps) {
         ? 'queued'
         : 'idle'
 
+  const shortId = SLUG_TO_SHORT[agent.slug]
+  const glyphData = shortId ? AGENT_MAP[shortId] : null
+  const agentEntry = shortId ? AGENTS_LIST.find(a => a.id === shortId) : null
+
+  const glyphMark = glyphData?.mark ?? agent.name.slice(0, 2).toUpperCase()
+  const glyphBg   = glyphData?.bg   ?? 'var(--bg-2)'
+  const glyphFg   = glyphData?.fg   ?? 'var(--fg-0)'
+  const agentName = glyphData?.name ?? agent.name
+  const agentRole = glyphData?.role ?? agent.department
+  const runs      = agentEntry?.runs ?? 0
+  const lastSeen  = agentEntry?.lastSeen ?? '—'
+
   return (
-    <div className="flex flex-col">
-      {/* Identity header */}
-      <div className="flex items-start gap-4 pb-5">
-        <div className="w-12 h-12 rounded-xl bg-[var(--surface-raised)] border border-[var(--border-color)] flex items-center justify-center shrink-0">
-          <AgentIdentityIcon slug={agent.slug} size={24} />
-        </div>
-        <div className="flex-1 min-w-0 pt-0.5">
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <h1 className="text-base font-semibold text-[var(--text-primary)] leading-none">
-              {agent.name}
-            </h1>
-            <AgentStatusBadge status={status} />
+    <div className="fade-in">
+      <div className="hub-hero">
+        <div className="hub-id">
+          <div
+            className="hub-glyph"
+            style={{ background: glyphBg, color: glyphFg, borderColor: 'transparent' }}
+          >
+            {glyphMark}
           </div>
-          <p className="text-xs text-[var(--text-muted)] mt-1.5">{agent.department}</p>
+          <div className="hub-meta">
+            <h1 className="hub-name">
+              {agentName}
+              <span className={"presence " + PRESENCE_CLASS[liveStatus]} />
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-2)', fontWeight: 400 }}>
+                {STATUS_LABEL[liveStatus]}
+              </span>
+            </h1>
+            <div className="hub-role">{agentRole}</div>
+            <div className="hub-status-row">
+              <div className="pair">
+                <span>Runs</span>
+                <span className="val">{runs.toLocaleString()}</span>
+              </div>
+              <div className="pair">
+                <span>Last action</span>
+                <span className="val">{lastSeen}</span>
+              </div>
+              <div className="pair">
+                <span>Model</span>
+                <span className="val">claude · sonnet · 4.5</span>
+              </div>
+              <div className="pair">
+                <span>Memory</span>
+                <span className="val">142 records</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="page-head-right">
+          <Link href="/workspace" className="btn">← Workforce</Link>
+          <button className="btn">Ask {agentName}</button>
+          <button className="btn primary">Assign task</button>
         </div>
       </div>
 
-      {/* Tab navigation */}
       {tabs.length > 0 && (
-        <nav
-          className="flex items-center gap-0.5 border-b border-[var(--border-color)] overflow-x-auto"
-        >
+        <div className="hub-tabs">
           {tabs.map(tab => {
             const isBaseTab = tab.href === `/agents/${agent.slug}`
             const isActive = isBaseTab
@@ -64,22 +124,19 @@ export function AgentHubLayout({ agent, tabs, children }: AgentHubLayoutProps) {
               <Link
                 key={tab.href}
                 href={tab.href}
-                className={cn(
-                  'px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 -mb-px transition-colors',
-                  isActive
-                    ? 'border-[var(--accent)] text-[var(--text-primary)]'
-                    : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
-                )}
+                className={"hub-tab" + (isActive ? " active" : "")}
               >
                 {tab.label}
+                {tab.count !== undefined && (
+                  <span className="count">{tab.count}</span>
+                )}
               </Link>
             )
           })}
-        </nav>
+        </div>
       )}
 
-      {/* Tab content */}
-      <div className="pt-6">{children}</div>
+      <div className="hub-body">{children}</div>
     </div>
   )
 }

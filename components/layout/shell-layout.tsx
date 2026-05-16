@@ -30,7 +30,7 @@ export function ShellLayout({
         }}
       >
         <TopBar />
-        <div style={{ overflowY: "auto", flex: 1, minHeight: 0 }}>
+        <div className="main-scroll" style={{ overflowY: "auto", flex: 1, minHeight: 0 }}>
           {children}
         </div>
       </main>

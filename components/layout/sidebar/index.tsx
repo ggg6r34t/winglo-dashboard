@@ -218,7 +218,7 @@ export function Sidebar() {
         }}>W</span>
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{ display: 'block', fontSize: 12.5, fontWeight: 500, color: 'var(--fg-0)' }}>Winglo HQ</span>
-          <span style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-3)', letterSpacing: 0 }}>AI Workforce OS</span>
+          <span style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-3)', letterSpacing: 0 }}>acme.co · production</span>
         </span>
         <span style={{ color: 'var(--fg-3)', width: 13, height: 13 }}>
           <NavIcon name="chevronUD" />
