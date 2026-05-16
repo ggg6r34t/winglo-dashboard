@@ -1,5 +1,5 @@
 import { ShellLayout } from '@/components/layout/shell-layout'
-import { AgentStatusIndicator } from '@/components/layout/top-bar/agent-status-indicator'
+import { ActiveAgentsPill } from '@/components/layout/top-bar/active-agents-pill'
 
 export default function DashboardLayout({
   children,
@@ -7,7 +7,7 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <ShellLayout agentStatusSlot={<AgentStatusIndicator />}>
+    <ShellLayout agentStatusSlot={<ActiveAgentsPill />}>
       {children}
     </ShellLayout>
   )
