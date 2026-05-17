@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
       { source: '/dashboard',     destination: '/workspace',               permanent: true },
       { source: '/orchestration', destination: '/workspace/live',          permanent: true },
       { source: '/opportunities',             destination: '/agents/growth/opportunities', permanent: true },
-      { source: '/agents/growth/workflows',   destination: '/agents/growth/opportunities', permanent: true },
+
       { source: '/outreach',      destination: '/agents/growth/outreach',  permanent: true },
       { source: '/memory',        destination: '/agents/growth/memory',    permanent: true },
       { source: '/analytics',     destination: '/agents/growth/analytics', permanent: true },
