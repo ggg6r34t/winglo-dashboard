@@ -8,7 +8,7 @@ export default async function GrowthIntakePage() {
   const profile = await getLatestBusinessProfile(MOCK_ORG_ID)
 
   return (
-    <div className="fade-in" style={{ maxWidth: 640 }}>
+    <div className="hub-body fade-in" style={{ maxWidth: 640 }}>
       {!profile || profile.status === 'draft' ? (
         <IntakeForm />
       ) : profile.status === 'processing' ? (

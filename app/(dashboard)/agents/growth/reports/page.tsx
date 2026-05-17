@@ -1,6 +1,6 @@
 export default function GrowthReportsPage() {
   return (
-    <div className="fade-in">
+    <div className="hub-body fade-in">
       <div className="section">
         <div className="section-head">
           <div className="section-title">Reports</div>

@@ -22,7 +22,7 @@ export default async function GrowthOpportunitiesPage({ searchParams }: PageProp
   const opportunities = await getOpportunities(MOCK_ORG_ID, { status, minScore })
 
   return (
-    <div className="fade-in">
+    <div className="hub-body fade-in">
       <FilterBar
         currentStatus={currentStatus}
         currentMinScore={currentMinScore}

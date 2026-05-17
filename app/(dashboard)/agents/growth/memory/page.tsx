@@ -7,7 +7,7 @@ export default async function GrowthMemoryPage() {
   const entries = await getMemoryEntries(MOCK_ORG_ID)
 
   return (
-    <div className="fade-in memory-layout">
+    <div className="hub-body fade-in memory-layout">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {entries.length === 0 ? (
           <p style={{ fontSize: 13, color: 'var(--fg-3)', paddingTop: 24 }}>

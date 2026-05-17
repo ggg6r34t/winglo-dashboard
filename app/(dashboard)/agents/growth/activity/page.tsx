@@ -11,7 +11,7 @@ export default async function GrowthActivityPage() {
   ])
 
   return (
-    <div className="fade-in">
+    <div className="hub-body fade-in">
       <OrchestrationPageClient
         initialRuns={initialRuns}
         initialLogs={initialLogs}

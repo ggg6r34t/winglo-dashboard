@@ -23,7 +23,7 @@ export default async function GrowthAnalyticsPage() {
   ]
 
   return (
-    <div className="fade-in">
+    <div className="hub-body fade-in">
       <div className="tile-row">
         {tiles.map(t => (
           <div className="tile" key={t.label}>

@@ -6,7 +6,7 @@ export default async function GrowthOutreachPage() {
   const drafts = await getOutreachDrafts(MOCK_ORG_ID).catch(() => [])
 
   return (
-    <div className="fade-in">
+    <div className="hub-body fade-in">
       <div className="section">
         <div className="section-head">
           <div className="section-title">
