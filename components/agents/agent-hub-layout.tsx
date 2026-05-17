@@ -141,7 +141,7 @@ export function AgentHubLayout({ agent, tabs, children }: AgentHubLayoutProps) {
         </div>
       )}
 
-      <div className="hub-body">{children}</div>
+      <div>{children}</div>
     </div>
   )
 }

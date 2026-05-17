@@ -18,7 +18,7 @@ interface GenericHubProps {
 
 export function GenericHub({ agentName }: GenericHubProps) {
   return (
-    <div className="fade-in">
+    <div className="hub-body fade-in">
       <div className="tile-row">
         {TILES.map(t => (
           <div className="tile" key={t.label}>
