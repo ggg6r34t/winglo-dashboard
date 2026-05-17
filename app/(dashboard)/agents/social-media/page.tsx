@@ -1,7 +1,5 @@
-import { NotDeployedView } from '@/components/agents/not-deployed-view'
-import { getAgentBySlug } from '@/lib/agents/registry'
+import { SocialHub } from '@/components/agents/social-hub'
 
 export default function SocialMediaPage() {
-  const agent = getAgentBySlug('social-media')
-  return <NotDeployedView agent={agent} />
+  return <SocialHub />
 }

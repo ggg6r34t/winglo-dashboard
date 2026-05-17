@@ -1,7 +1,5 @@
-import { NotDeployedView } from '@/components/agents/not-deployed-view'
-import { getAgentBySlug } from '@/lib/agents/registry'
+import { GenericHub } from '@/components/agents/generic-hub'
 
 export default function SalesPage() {
-  const agent = getAgentBySlug('sales')
-  return <NotDeployedView agent={agent} />
+  return <GenericHub agentName="Hale" />
 }

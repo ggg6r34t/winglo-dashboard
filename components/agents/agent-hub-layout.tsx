@@ -115,24 +115,29 @@ export function AgentHubLayout({ agent, tabs, children }: AgentHubLayoutProps) {
 
       {tabs.length > 0 && (
         <div className="hub-tabs">
-          {tabs.map(tab => {
-            const isBaseTab = tab.href === `/agents/${agent.slug}`
-            const isActive = isBaseTab
-              ? pathname === tab.href
-              : pathname === tab.href || pathname.startsWith(`${tab.href}/`)
-            return (
-              <Link
-                key={tab.href}
-                href={tab.href}
-                className={"hub-tab" + (isActive ? " active" : "")}
-              >
-                {tab.label}
-                {tab.count !== undefined && (
-                  <span className="count">{tab.count}</span>
-                )}
-              </Link>
-            )
-          })}
+          {(() => {
+            const seenActive = new Set<string>()
+            return tabs.map(tab => {
+              const isBaseTab = tab.href === `/agents/${agent.slug}`
+              const wouldBeActive = isBaseTab
+                ? pathname === tab.href
+                : pathname === tab.href || pathname.startsWith(`${tab.href}/`)
+              const isActive = wouldBeActive && !seenActive.has(tab.href)
+              if (isActive) seenActive.add(tab.href)
+              return (
+                <Link
+                  key={tab.label}
+                  href={tab.href}
+                  className={"hub-tab" + (isActive ? " active" : "")}
+                >
+                  {tab.label}
+                  {tab.count !== undefined && (
+                    <span className="count">{tab.count}</span>
+                  )}
+                </Link>
+              )
+            })
+          })()}
         </div>
       )}
 
