@@ -5,9 +5,6 @@ import { useRouter } from 'next/navigation'
 import type { Opportunity, OpportunityStatus, OpportunityType, OutreachChannel, OutreachTone } from '@/types'
 import { updateOpportunityStatus } from '../server/actions'
 import { generateOutreachDraft } from '@/features/outreach/server/actions'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 
 const TYPE_LABELS: Record<OpportunityType, string> = {
   integration: 'Integration',
@@ -18,30 +15,20 @@ const TYPE_LABELS: Record<OpportunityType, string> = {
   strategic: 'Strategic',
 }
 
-const STATUS_STYLES: Record<OpportunityStatus, string> = {
-  new: 'bg-[var(--surface-raised)] text-[var(--text-secondary)]',
-  reviewing: 'bg-blue-500/10 text-blue-400',
-  approved: 'bg-green-500/10 text-green-400',
-  rejected: 'bg-red-500/10 text-red-400',
-  contacted: 'bg-purple-500/10 text-purple-400',
-}
-
 function ScoreBadge({ score }: { score: number }) {
-  const colorClass =
-    score >= 90
-      ? 'bg-green-500/10 text-green-400 border-green-500/20'
-      : score >= 70
-      ? 'bg-lime-500/10 text-lime-400 border-lime-500/20'
-      : score >= 50
-      ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-      : 'bg-red-500/10 text-red-400 border-red-500/20'
+  const color =
+    score >= 90 ? 'var(--ok)' :
+    score >= 70 ? 'oklch(0.80 0.15 130)' :
+    score >= 50 ? 'var(--warn)' :
+    'var(--bad)'
   return (
-    <span
-      className={cn(
-        'inline-flex items-center justify-center w-9 h-9 rounded-full text-sm font-bold border shrink-0',
-        colorClass
-      )}
-    >
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      width: 36, height: 36, borderRadius: '50%',
+      border: '1px solid currentColor', color,
+      fontSize: 12, fontWeight: 700, flexShrink: 0,
+      fontFamily: 'var(--font-mono)',
+    }}>
       {score}
     </span>
   )
@@ -54,8 +41,7 @@ interface OpportunityCardProps {
 export function OpportunityCard({ opportunity }: OpportunityCardProps) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
-  const canAct =
-    opportunity.status === 'new' || opportunity.status === 'reviewing'
+  const canAct = opportunity.status === 'new' || opportunity.status === 'reviewing'
 
   const [channel, setChannel] = useState<OutreachChannel>('email')
   const [tone, setTone] = useState<OutreachTone>('professional')
@@ -64,9 +50,7 @@ export function OpportunityCard({ opportunity }: OpportunityCardProps) {
   const [showRationale, setShowRationale] = useState(false)
 
   function handleStatusChange(status: OpportunityStatus) {
-    startTransition(async () => {
-      await updateOpportunityStatus(opportunity.id, status)
-    })
+    startTransition(async () => { await updateOpportunityStatus(opportunity.id, status) })
   }
 
   function handleGenerateOutreach() {
@@ -74,7 +58,7 @@ export function OpportunityCard({ opportunity }: OpportunityCardProps) {
       try {
         setGenerateError(null)
         await generateOutreachDraft(opportunity.id, channel, tone)
-        router.push('/outreach')
+        router.push('/agents/growth/outreach')
       } catch (e) {
         setGenerateError(e instanceof Error ? e.message : 'Generation failed')
       }
@@ -82,34 +66,34 @@ export function OpportunityCard({ opportunity }: OpportunityCardProps) {
   }
 
   return (
-    <div
-      className={cn(
-        'rounded-lg border bg-[var(--surface)] p-4 flex flex-col gap-3 transition-opacity',
-        opportunity.status === 'rejected'
-          ? 'border-[var(--border-color)] opacity-50'
-          : 'border-[var(--border-color)]',
-        isPending && 'opacity-60 pointer-events-none'
-      )}
-    >
-      <div className="flex items-start gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-medium text-sm text-[var(--text-primary)] leading-tight">
+    <div style={{
+      background: 'var(--bg-2)',
+      border: '1px solid var(--line-2)',
+      borderRadius: 'var(--r-md)',
+      padding: 14,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 10,
+      transition: 'opacity 120ms ease',
+      opacity: opportunity.status === 'rejected' ? 0.5 : isPending ? 0.6 : 1,
+      pointerEvents: isPending ? 'none' : undefined,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 2 }}>
+            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--fg-0)', letterSpacing: '-0.005em' }}>
               {opportunity.company_name}
             </span>
-            <Badge
-              variant="outline"
-              className="text-xs shrink-0 border-[var(--border-color)] text-[var(--text-muted)]"
-            >
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               {TYPE_LABELS[opportunity.opportunity_type]}
-            </Badge>
+            </span>
           </div>
           {opportunity.company_url && (opportunity.company_url.startsWith('https://') || opportunity.company_url.startsWith('http://')) && (
             <a
               href={opportunity.company_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-[var(--text-muted)] hover:text-[var(--accent)] truncate block mt-0.5"
+              style={{ fontSize: 11, color: 'var(--fg-3)', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
             >
               {opportunity.company_url.replace(/^https?:\/\//, '')}
             </a>
@@ -119,32 +103,35 @@ export function OpportunityCard({ opportunity }: OpportunityCardProps) {
       </div>
 
       {opportunity.company_description && (
-        <p className="text-xs text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
+        <p style={{ fontSize: 12, color: 'var(--fg-2)', lineHeight: 1.5, margin: 0,
+          overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
           {opportunity.company_description}
         </p>
       )}
 
       {opportunity.estimated_impact && (
-        <p className="text-xs text-[var(--text-muted)] leading-relaxed">
-          <span className="text-[var(--text-secondary)] font-medium">Impact: </span>
+        <p style={{ fontSize: 12, color: 'var(--fg-3)', lineHeight: 1.5, margin: 0 }}>
+          <span style={{ color: 'var(--fg-1)', fontWeight: 500 }}>Impact: </span>
           {opportunity.estimated_impact}
         </p>
       )}
 
       {opportunity.score_rationale && (
-        <div className="mt-3">
+        <div>
           <button
             onClick={() => setShowRationale(r => !r)}
-            className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] flex items-center gap-1"
+            style={{ fontSize: 11, color: 'var(--fg-3)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: 4 }}
           >
             {showRationale ? '▲ Hide rationale' : '▼ Show rationale'}
           </button>
           {showRationale && (
-            <div className="mt-2 space-y-2 text-xs bg-[var(--surface-raised)] rounded p-3">
+            <div style={{ marginTop: 8, padding: '10px 12px', background: 'var(--bg-3)', borderRadius: 'var(--r-sm)', display: 'flex', flexDirection: 'column', gap: 6 }}>
               {Object.entries(opportunity.score_rationale).map(([key, value]) => (
                 <div key={key}>
-                  <span className="text-[var(--text-muted)] capitalize">{key.replace(/_/g, ' ')}</span>
-                  <p className="text-[var(--text-primary)] mt-0.5">{String(value)}</p>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
+                    {key.replace(/_/g, ' ')}
+                  </div>
+                  <div style={{ fontSize: 12, color: 'var(--fg-1)' }}>{String(value)}</div>
                 </div>
               ))}
             </div>
@@ -152,46 +139,29 @@ export function OpportunityCard({ opportunity }: OpportunityCardProps) {
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-1 mt-auto">
-        <span
-          className={cn(
-            'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize',
-            STATUS_STYLES[opportunity.status]
-          )}
-        >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
           {opportunity.status}
         </span>
         {canAct && (
-          <div className="flex items-center gap-1.5">
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={isPending}
-              onClick={() => handleStatusChange('approved')}
-              className="text-xs h-7 px-2.5 border-[var(--border-color)] hover:border-green-500/50 hover:text-green-400 hover:bg-green-500/5"
-            >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <button className="btn-mini approve" disabled={isPending} onClick={() => handleStatusChange('approved')}>
               Approve
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              disabled={isPending}
-              onClick={() => handleStatusChange('rejected')}
-              className="text-xs h-7 px-2.5 text-[var(--text-muted)] hover:text-red-400 hover:bg-red-500/5"
-            >
+            </button>
+            <button className="btn-mini" disabled={isPending} onClick={() => handleStatusChange('rejected')}>
               Reject
-            </Button>
+            </button>
           </div>
         )}
       </div>
 
       {opportunity.status === 'approved' && (
-        <div className="mt-3 pt-3 border-t border-[var(--border-color)] flex items-center gap-2 flex-wrap">
+        <div style={{ marginTop: 4, paddingTop: 10, borderTop: '1px solid var(--line-1)', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
           <select
             value={channel}
             onChange={e => setChannel(e.target.value as OutreachChannel)}
             disabled={isGenerating}
-            className="text-xs bg-[var(--surface-raised)] border border-[var(--border-color)] rounded px-2 py-1 text-[var(--text-primary)]"
+            style={{ fontSize: 12, background: 'var(--bg-3)', border: '1px solid var(--line-2)', borderRadius: 'var(--r-sm)', padding: '3px 8px', color: 'var(--fg-1)', fontFamily: 'inherit' }}
           >
             <option value="email">Email</option>
             <option value="linkedin">LinkedIn</option>
@@ -201,21 +171,17 @@ export function OpportunityCard({ opportunity }: OpportunityCardProps) {
             value={tone}
             onChange={e => setTone(e.target.value as OutreachTone)}
             disabled={isGenerating}
-            className="text-xs bg-[var(--surface-raised)] border border-[var(--border-color)] rounded px-2 py-1 text-[var(--text-primary)]"
+            style={{ fontSize: 12, background: 'var(--bg-3)', border: '1px solid var(--line-2)', borderRadius: 'var(--r-sm)', padding: '3px 8px', color: 'var(--fg-1)', fontFamily: 'inherit' }}
           >
             <option value="professional">Professional</option>
             <option value="warm">Warm</option>
             <option value="direct">Direct</option>
           </select>
-          <button
-            onClick={handleGenerateOutreach}
-            disabled={isGenerating}
-            className="text-xs px-3 py-1 rounded bg-[var(--accent)] text-white hover:opacity-90 disabled:opacity-50"
-          >
+          <button className="btn" onClick={handleGenerateOutreach} disabled={isGenerating} style={{ opacity: isGenerating ? 0.5 : 1 }}>
             {isGenerating ? 'Generating...' : 'Generate Draft'}
           </button>
           {generateError && (
-            <span className="text-xs text-[var(--destructive)]">{generateError}</span>
+            <span style={{ fontSize: 11, color: 'var(--bad)' }}>{generateError}</span>
           )}
         </div>
       )}

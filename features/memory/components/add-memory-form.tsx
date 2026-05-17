@@ -2,9 +2,29 @@
 
 import { useState, useTransition } from 'react'
 import { createMemoryFromNotes } from '../server/actions'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
+
+const fieldStyle: React.CSSProperties = {
+  width: '100%',
+  fontSize: 13,
+  background: 'var(--bg-2)',
+  border: '1px solid var(--line-2)',
+  borderRadius: 'var(--r-sm)',
+  padding: '7px 10px',
+  color: 'var(--fg-0)',
+  fontFamily: 'inherit',
+  outline: 'none',
+  boxSizing: 'border-box',
+}
+
+const labelStyle: React.CSSProperties = {
+  display: 'block',
+  fontFamily: 'var(--font-mono)',
+  fontSize: 11,
+  color: 'var(--fg-3)',
+  textTransform: 'uppercase',
+  letterSpacing: '0.06em',
+  marginBottom: 6,
+}
 
 export function AddMemoryForm() {
   const [isPending, startTransition] = useTransition()
@@ -31,43 +51,52 @@ export function AddMemoryForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-lg border border-[var(--border-color)] bg-[var(--surface)] p-5 space-y-4">
-      <h3 className="text-sm font-semibold text-[var(--text-primary)]">Capture a note</h3>
-      <div className="space-y-1.5">
-        <Label htmlFor="context" className="text-xs text-[var(--text-muted)]">Context (optional)</Label>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+        Capture a note
+      </div>
+
+      <div>
+        <label htmlFor="context" style={labelStyle}>Context <span style={{ color: 'var(--fg-4)', textTransform: 'none', letterSpacing: 0 }}>(optional)</span></label>
         <input
           id="context"
           value={context}
           onChange={e => setContext(e.target.value)}
           placeholder="e.g. After Salesforce BD call on May 9"
           disabled={isPending}
-          className="w-full text-sm bg-[var(--surface-raised)] border border-[var(--border-color)] rounded-md px-3 py-2 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
+          style={fieldStyle}
         />
       </div>
-      <div className="space-y-1.5">
-        <Label htmlFor="notes" className="text-xs text-[var(--text-muted)]">Notes <span className="text-[var(--destructive)]">*</span></Label>
-        <Textarea
+
+      <div>
+        <label htmlFor="notes" style={labelStyle}>Notes <span style={{ color: 'var(--bad)' }}>*</span></label>
+        <textarea
           id="notes"
           value={notes}
           onChange={e => setNotes(e.target.value)}
           placeholder="Describe what happened, what you learned, or what you observed..."
           rows={4}
           disabled={isPending}
-          className="bg-[var(--surface-raised)] border-[var(--border-color)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] resize-none"
+          style={{ ...fieldStyle, resize: 'none', lineHeight: 1.5 }}
         />
       </div>
-      <div className="flex items-center gap-3">
-        <Button
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <button
           type="submit"
           disabled={isPending || !notes.trim()}
-          className="bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white"
+          className="btn primary"
+          style={{ opacity: isPending || !notes.trim() ? 0.5 : 1 }}
         >
           {isPending ? 'Processing...' : 'Save to Memory'}
-        </Button>
-        {success && <span className="text-xs text-green-400">Saved successfully</span>}
+        </button>
+        {success && (
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ok)' }}>Saved</span>
+        )}
       </div>
+
       {error && (
-        <p className="text-xs text-(--destructive)">{error}</p>
+        <p style={{ fontSize: 11, color: 'var(--bad)', margin: 0 }}>{error}</p>
       )}
     </form>
   )

@@ -6,11 +6,29 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { intakeFormSchema, type IntakeFormInput } from '../validations'
 import { analyzeBusinessProfile } from '../server/actions'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+
+const fieldStyle: React.CSSProperties = {
+  width: '100%',
+  fontSize: 13,
+  background: 'var(--bg-2)',
+  border: '1px solid var(--line-2)',
+  borderRadius: 'var(--r-sm)',
+  padding: '7px 10px',
+  color: 'var(--fg-0)',
+  fontFamily: 'inherit',
+  outline: 'none',
+  boxSizing: 'border-box',
+}
+
+const labelStyle: React.CSSProperties = {
+  display: 'block',
+  fontFamily: 'var(--font-mono)',
+  fontSize: 11,
+  color: 'var(--fg-3)',
+  textTransform: 'uppercase',
+  letterSpacing: '0.06em',
+  marginBottom: 6,
+}
 
 export function IntakeForm() {
   const router = useRouter()
@@ -32,82 +50,74 @@ export function IntakeForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <div className="space-y-1.5">
-        <Label htmlFor="name" className="text-sm text-[var(--text-secondary)]">
-          Business name <span className="text-[var(--destructive)]">*</span>
-        </Label>
-        <Input
+    <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+      <div>
+        <label htmlFor="name" style={labelStyle}>
+          Business name <span style={{ color: 'var(--bad)' }}>*</span>
+        </label>
+        <input
           id="name"
           placeholder="Acme Corp"
           disabled={isPending}
-          className={cn(
-            'bg-[var(--surface-raised)] border-[var(--border-color)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)]',
-            errors.name && 'border-[var(--destructive)]'
-          )}
+          style={{ ...fieldStyle, borderColor: errors.name ? 'var(--bad)' : undefined }}
           {...register('name')}
         />
         {errors.name && (
-          <p className="text-xs text-[var(--destructive)]">{errors.name.message}</p>
+          <p style={{ fontSize: 11, color: 'var(--bad)', marginTop: 4 }}>{errors.name.message}</p>
         )}
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="website_url" className="text-sm text-[var(--text-secondary)]">
-          Website URL <span className="text-[var(--text-muted)] font-normal">(optional)</span>
-        </Label>
-        <Input
+      <div>
+        <label htmlFor="website_url" style={labelStyle}>
+          Website URL <span style={{ color: 'var(--fg-3)', fontFamily: 'inherit', textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+        </label>
+        <input
           id="website_url"
           placeholder="https://acme.example.com"
           disabled={isPending}
-          className={cn(
-            'bg-[var(--surface-raised)] border-[var(--border-color)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)]',
-            errors.website_url && 'border-[var(--destructive)]'
-          )}
+          style={{ ...fieldStyle, borderColor: errors.website_url ? 'var(--bad)' : undefined }}
           {...register('website_url')}
         />
         {errors.website_url && (
-          <p className="text-xs text-[var(--destructive)]">{errors.website_url.message}</p>
+          <p style={{ fontSize: 11, color: 'var(--bad)', marginTop: 4 }}>{errors.website_url.message}</p>
         )}
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="description" className="text-sm text-[var(--text-secondary)]">
-          Business description <span className="text-[var(--destructive)]">*</span>
-        </Label>
-        <Textarea
+      <div>
+        <label htmlFor="description" style={labelStyle}>
+          Business description <span style={{ color: 'var(--bad)' }}>*</span>
+        </label>
+        <textarea
           id="description"
           placeholder="Describe what your business does, who you sell to, and what problem you solve..."
           rows={5}
           disabled={isPending}
-          className={cn(
-            'bg-[var(--surface-raised)] border-[var(--border-color)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] resize-none',
-            errors.description && 'border-[var(--destructive)]'
-          )}
+          style={{ ...fieldStyle, resize: 'none', lineHeight: 1.5, borderColor: errors.description ? 'var(--bad)' : undefined }}
           {...register('description')}
         />
         {errors.description && (
-          <p className="text-xs text-[var(--destructive)]">{errors.description.message}</p>
+          <p style={{ fontSize: 11, color: 'var(--bad)', marginTop: 4 }}>{errors.description.message}</p>
         )}
       </div>
 
-      <Button
+      <button
         type="submit"
         disabled={isPending}
-        className="bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white"
+        className="btn primary"
+        style={{ alignSelf: 'flex-start', opacity: isPending ? 0.6 : 1 }}
       >
         {isPending ? (
-          <span className="flex items-center gap-2">
-            <svg aria-hidden="true" className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          <>
+            <svg aria-hidden="true" style={{ width: 13, height: 13, animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">
+              <circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
             Analyzing...
-          </span>
+          </>
         ) : (
           'Analyze My Business'
         )}
-      </Button>
+      </button>
     </form>
   )
 }
