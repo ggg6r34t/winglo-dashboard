@@ -1920,7 +1920,7 @@ body {
 }
 .cal-day:hover { border-color: var(--line-2); }
 .cal-day.outside { opacity: 0.35; pointer-events: none; }
-.cal-day.today { border-color: var(--accent); background: oklch(0.80 0.12 75 / 0.05); }
+.cal-day.today { border-color: var(--accent-line); background: oklch(0.80 0.12 75 / 0.05); }
 .cal-day.selected { background: var(--bg-3); border-color: var(--line-3); }
 .cal-day-num {
   font-family: var(--font-mono);
@@ -2162,3 +2162,16 @@ body {
 .dot.run  { background: var(--accent); }
 .dot.done { background: var(--ok); }
 .dot.wait { background: var(--warn); }
+
+/* ---- Sidebar section heading (used in memory-tab aside) ---- */
+.rp-section-title {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-3);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
