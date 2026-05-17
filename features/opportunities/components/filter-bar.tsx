@@ -38,37 +38,30 @@ export function FilterBar({ currentStatus, currentMinScore, total }: FilterBarPr
   }
 
   return (
-    <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
-      <div className="flex items-center gap-1 p-1 rounded-lg bg-[var(--surface-raised)]">
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 6 }}>
         {STATUS_TABS.map((tab) => (
           <button
             key={tab.value}
             onClick={() => router.push(buildUrl(tab.value, currentMinScore))}
-            className={cn(
-              'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
-              currentStatus === tab.value
-                ? 'bg-[var(--surface)] text-[var(--text-primary)] shadow-sm'
-                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-            )}
+            className={"chip" + (currentStatus === tab.value ? " active" : "")}
           >
             {tab.label}
           </button>
         ))}
       </div>
 
-      <div className="flex items-center gap-3">
-        <select
-          value={currentMinScore}
-          onChange={(e) => router.push(buildUrl(currentStatus, e.target.value))}
-          className="text-sm bg-[var(--surface-raised)] border border-[var(--border-color)] rounded-md px-2 py-1.5 text-[var(--text-secondary)] cursor-pointer focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-        >
-          {SCORE_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-        <span className="text-sm text-[var(--text-muted)] whitespace-nowrap">
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        {SCORE_OPTIONS.map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => router.push(buildUrl(currentStatus, opt.value))}
+            className={"chip" + (currentMinScore === opt.value ? " active" : "")}
+          >
+            {opt.label}
+          </button>
+        ))}
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-3)', marginLeft: 8, whiteSpace: 'nowrap' }}>
           {total} result{total !== 1 ? 's' : ''}
         </span>
       </div>
