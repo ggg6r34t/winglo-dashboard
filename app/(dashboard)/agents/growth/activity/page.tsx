@@ -1,4 +1,3 @@
-import { PageHeader } from '@/components/shared/page-header'
 import { OrchestrationPageClient } from '@/features/orchestration/components/orchestration-page-client'
 import { getAIRuns, getOrgAgentLogs } from '@/server/dal/ai-runs'
 import { getOrganizationById } from '@/server/dal/organizations'
@@ -12,16 +11,12 @@ export default async function GrowthActivityPage() {
   ])
 
   return (
-    <>
-      <PageHeader
-        title="Activity"
-        subtitle="Live pipeline orchestration and execution history"
-      />
+    <div className="fade-in">
       <OrchestrationPageClient
         initialRuns={initialRuns}
         initialLogs={initialLogs}
         monitoringEnabled={org?.monitoring_enabled ?? false}
       />
-    </>
+    </div>
   )
 }

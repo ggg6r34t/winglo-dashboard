@@ -1,5 +1,3 @@
-import { PageHeader } from '@/components/shared/page-header'
-import { EmptyState } from '@/components/shared/empty-state'
 import { getOpportunities } from '@/server/dal/opportunities'
 import { MOCK_ORG_ID } from '@/lib/mock'
 import { FilterBar } from '@/features/opportunities/components/filter-bar'
@@ -24,38 +22,23 @@ export default async function GrowthWorkflowsPage({ searchParams }: PageProps) {
   const opportunities = await getOpportunities(MOCK_ORG_ID, { status, minScore })
 
   return (
-    <>
-      <PageHeader
-        title="Workflows"
-        subtitle="Active partnership opportunities in the pipeline"
-      />
+    <div className="fade-in">
       <FilterBar
         currentStatus={currentStatus}
         currentMinScore={currentMinScore}
         total={opportunities.length}
       />
       {opportunities.length === 0 ? (
-        <EmptyState
-          icon={
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-6a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"
-              />
-            </svg>
-          }
-          title="No opportunities found"
-          description="Try adjusting your filters, or run Discovery from the Intake page."
-        />
+        <p style={{ fontSize: 13, color: 'var(--fg-3)', paddingTop: 24 }}>
+          No opportunities found — try adjusting filters, or run Discovery from the Intake tab.
+        </p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="integ-grid-large" style={{ marginTop: 16 }}>
           {opportunities.map((opp) => (
             <OpportunityCard key={opp.id} opportunity={opp} />
           ))}
         </div>
       )}
-    </>
+    </div>
   )
 }

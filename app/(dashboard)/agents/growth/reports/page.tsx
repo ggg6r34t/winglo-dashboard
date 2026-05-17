@@ -1,5 +1,3 @@
-import { PageHeader } from '@/components/shared/page-header'
-import { EmptyState } from '@/components/shared/empty-state'
 import { OutreachDraftCard } from '@/features/outreach/components/outreach-draft-card'
 import { GenerateSnapshotButton } from '@/features/analytics/components/generate-snapshot-button'
 import { getOutreachDrafts } from '@/server/dal/outreach-drafts'
@@ -15,54 +13,55 @@ export default async function GrowthReportsPage() {
   const latestSnapshot = snapshots.at(-1) ?? null
 
   return (
-    <>
-      <PageHeader
-        title="Reports"
-        subtitle="Outreach drafts and generated analytics snapshots"
-        action={<GenerateSnapshotButton />}
-      />
-
-      {/* Outreach drafts section */}
-      <section className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-3">
-          Outreach drafts
-        </p>
+    <div className="fade-in">
+      <div className="section">
+        <div className="section-head">
+          <div className="section-title">
+            Outreach drafts
+            <span className="lbl">{drafts.length} draft{drafts.length !== 1 ? 's' : ''}</span>
+          </div>
+        </div>
         {drafts.length === 0 ? (
-          <EmptyState
-            icon={
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            }
-            title="No drafts yet"
-            description="Approve opportunities to generate AI outreach drafts."
-          />
+          <p style={{ fontSize: 13, color: 'var(--fg-3)', paddingTop: 8 }}>
+            No drafts yet — approve opportunities to generate AI outreach.
+          </p>
         ) : (
-          <div className="space-y-4 max-w-3xl">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 720 }}>
             {drafts.map(draft => (
               <OutreachDraftCard key={draft.id} draft={draft} />
             ))}
           </div>
         )}
-      </section>
+      </div>
 
-      {/* Latest snapshot section */}
-      {latestSnapshot && (
-        <section>
-          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-3">
-            Latest snapshot
-          </p>
-          <div className="p-4 rounded-lg border border-[var(--border-color)] bg-[var(--surface)] max-w-2xl">
-            <p className="text-xs text-[var(--text-muted)] mb-2">
-              {new Date(latestSnapshot.created_at).toLocaleDateString()}
-            </p>
-            <p className="text-sm text-[var(--text-secondary)]">
-              Snapshot date: {latestSnapshot.snapshot_date}
-            </p>
+      <div className="section">
+        <div className="section-head">
+          <div className="section-title">
+            Analytics snapshot
+            {latestSnapshot && (
+              <span className="lbl">{new Date(latestSnapshot.created_at).toLocaleDateString()}</span>
+            )}
           </div>
-        </section>
-      )}
-    </>
+          <GenerateSnapshotButton />
+        </div>
+        {latestSnapshot ? (
+          <div className="workflow-list">
+            <div className="wf-row">
+              <div className="wf-state done" />
+              <div className="wf-body">
+                <div className="wf-title">Snapshot · {latestSnapshot.snapshot_date}</div>
+                <div className="wf-meta">
+                  <span>Generated {new Date(latestSnapshot.created_at).toLocaleDateString()}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p style={{ fontSize: 13, color: 'var(--fg-3)', paddingTop: 8 }}>
+            No snapshots yet — use Generate Snapshot to capture today&apos;s metrics.
+          </p>
+        )}
+      </div>
+    </div>
   )
 }
