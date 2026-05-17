@@ -7,18 +7,19 @@ import { MOCK_ORG_ID } from '@/lib/mock'
 export default async function GrowthAnalyticsPage() {
   const allSnapshots = await getAnalyticsSnapshots(MOCK_ORG_ID, { days: 90 })
   const last30 = allSnapshots.slice(-30)
+  const latestSnapshot = allSnapshots.at(-1) ?? null
 
-  const totalOutreachSent    = last30.reduce((sum, s) => sum + s.metrics.outreach_sent, 0)
-  const totalOppsDiscovered  = last30.reduce((sum, s) => sum + s.metrics.opportunities_discovered, 0)
-  const avgResponseRateRaw   = last30.length > 0
+  const totalOutreachSent   = last30.reduce((sum, s) => sum + s.metrics.outreach_sent, 0)
+  const totalOppsDiscovered = last30.reduce((sum, s) => sum + s.metrics.opportunities_discovered, 0)
+  const avgResponseRateRaw  = last30.length > 0
     ? last30.reduce((sum, s) => sum + s.metrics.response_rate, 0) / last30.length
     : 0
   const avgResponseRate = `${(avgResponseRateRaw * 100).toFixed(1)}%`
 
   const tiles = [
-    { label: 'Outreach sent',    value: String(totalOutreachSent),   unit: '', foot: 'last 30 days', footTone: '' },
-    { label: 'Opportunities',    value: String(totalOppsDiscovered),  unit: '', foot: 'discovered last 30d', footTone: totalOppsDiscovered > 0 ? 'up' : '' },
-    { label: 'Response rate',    value: avgResponseRate,              unit: '', foot: 'rolling avg',  footTone: '' },
+    { label: 'Outreach sent',  value: String(totalOutreachSent),  unit: '', foot: 'last 30 days',      footTone: '' },
+    { label: 'Opportunities',  value: String(totalOppsDiscovered), unit: '', foot: 'discovered last 30d', footTone: totalOppsDiscovered > 0 ? 'up' : '' },
+    { label: 'Response rate',  value: avgResponseRate,             unit: '', foot: 'rolling avg',        footTone: '' },
   ]
 
   return (
@@ -51,6 +52,36 @@ export default async function GrowthAnalyticsPage() {
           <div className="section-title">AI insights</div>
         </div>
         <InsightsPanel initial={null} />
+      </div>
+
+      <div className="section">
+        <div className="section-head">
+          <div className="section-title">
+            Snapshots
+            {latestSnapshot && (
+              <span className="lbl">latest {new Date(latestSnapshot.created_at).toLocaleDateString()}</span>
+            )}
+          </div>
+        </div>
+        {latestSnapshot ? (
+          <div className="workflow-list">
+            {allSnapshots.slice(-5).reverse().map(s => (
+              <div key={s.id} className="wf-row">
+                <div className="wf-state done" />
+                <div className="wf-body">
+                  <div className="wf-title">Snapshot · {s.snapshot_date}</div>
+                  <div className="wf-meta">
+                    <span>Generated {new Date(s.created_at).toLocaleDateString()}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p style={{ fontSize: 13, color: 'var(--fg-3)', paddingTop: 8 }}>
+            No snapshots yet — use Generate Snapshot to capture today&apos;s metrics.
+          </p>
+        )}
       </div>
     </div>
   )
