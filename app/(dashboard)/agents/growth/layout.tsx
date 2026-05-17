@@ -5,7 +5,7 @@ import type { HubTab } from '@/components/agents/agent-hub-layout'
 const GROWTH_TABS: HubTab[] = [
   { label: 'Overview',  href: '/agents/growth' },
   { label: 'Intake',    href: '/agents/growth/intake' },
-  { label: 'Workflows', href: '/agents/growth/workflows' },
+  { label: 'Opportunities', href: '/agents/growth/opportunities' },
   { label: 'Activity',  href: '/agents/growth/activity' },
   { label: 'Reports',   href: '/agents/growth/reports' },
   { label: 'Memory',    href: '/agents/growth/memory' },
