@@ -28,7 +28,8 @@ export function GenerateSnapshotButton() {
     <button
       onClick={handleGenerate}
       disabled={isPending}
-      className="text-xs px-3 py-1.5 rounded border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-primary)] disabled:opacity-50"
+      className="btn"
+      style={{ opacity: isPending ? 0.5 : 1 }}
     >
       {error ?? (isPending ? 'Generating...' : done ? 'Snapshot saved' : 'Generate Snapshot')}
     </button>

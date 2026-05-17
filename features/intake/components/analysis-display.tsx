@@ -4,11 +4,27 @@ import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import type { BusinessProfile } from '@/types'
 import { runDiscovery } from '../server/actions'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 
 interface AnalysisDisplayProps {
   profile: BusinessProfile
+}
+
+const sectionStyle: React.CSSProperties = {
+  background: 'var(--bg-2)',
+  border: '1px solid var(--line-2)',
+  borderRadius: 'var(--r-md)',
+  padding: '16px 18px',
+  marginBottom: 12,
+}
+
+const rowLabelStyle: React.CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: 10.5,
+  color: 'var(--fg-3)',
+  textTransform: 'uppercase',
+  letterSpacing: '0.06em',
+  width: 110,
+  flexShrink: 0,
 }
 
 export function AnalysisDisplay({ profile }: AnalysisDisplayProps) {
@@ -18,103 +34,102 @@ export function AnalysisDisplay({ profile }: AnalysisDisplayProps) {
   function handleRunDiscovery() {
     startTransition(async () => {
       await runDiscovery(profile.id)
-      router.push('/opportunities')
+      router.push('/agents/growth/opportunities')
     })
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, marginBottom: 20 }}>
         <div>
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">{profile.name}</h2>
-          <p className="text-sm text-[var(--text-secondary)] mt-0.5">Analysis complete</p>
+          <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--fg-0)', letterSpacing: '-0.01em' }}>{profile.name}</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-3)', marginTop: 2 }}>Analysis complete</div>
         </div>
-        <Button
+        <button
           onClick={handleRunDiscovery}
           disabled={isPending}
-          className="shrink-0 bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-white"
+          className="btn primary"
+          style={{ flexShrink: 0, opacity: isPending ? 0.6 : 1 }}
         >
           {isPending ? (
-            <span className="flex items-center gap-2">
-              <svg aria-hidden="true" className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            <>
+              <svg aria-hidden="true" style={{ width: 13, height: 13, animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">
+                <circle style={{ opacity: 0.25 }} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path style={{ opacity: 0.75 }} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
               Discovering...
-            </span>
+            </>
           ) : (
             'Discover Opportunities'
           )}
-        </Button>
+        </button>
       </div>
 
       {profile.icp && (
-        <section className="rounded-lg border border-[var(--border-color)] bg-[var(--surface)] p-5">
-          <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">
+        <div style={sectionStyle}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>
             Ideal Customer Profile
-          </h3>
-          <dl className="space-y-3 text-sm">
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {profile.icp.company_size && (
-              <div className="flex gap-2">
-                <dt className="text-[var(--text-muted)] w-28 shrink-0">Company size</dt>
-                <dd className="text-[var(--text-primary)]">{profile.icp.company_size}</dd>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <span style={rowLabelStyle}>Company size</span>
+                <span style={{ fontSize: 13, color: 'var(--fg-1)' }}>{profile.icp.company_size}</span>
               </div>
             )}
             {profile.icp.industry && (
-              <div className="flex gap-2">
-                <dt className="text-[var(--text-muted)] w-28 shrink-0">Industry</dt>
-                <dd className="text-[var(--text-primary)]">{profile.icp.industry}</dd>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <span style={rowLabelStyle}>Industry</span>
+                <span style={{ fontSize: 13, color: 'var(--fg-1)' }}>{profile.icp.industry}</span>
               </div>
             )}
             {profile.icp.role && (
-              <div className="flex gap-2">
-                <dt className="text-[var(--text-muted)] w-28 shrink-0">Buyer role</dt>
-                <dd className="text-[var(--text-primary)]">{profile.icp.role}</dd>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <span style={rowLabelStyle}>Buyer role</span>
+                <span style={{ fontSize: 13, color: 'var(--fg-1)' }}>{profile.icp.role}</span>
               </div>
             )}
             {profile.icp.budget_range && (
-              <div className="flex gap-2">
-                <dt className="text-[var(--text-muted)] w-28 shrink-0">Budget range</dt>
-                <dd className="text-[var(--text-primary)]">{profile.icp.budget_range}</dd>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <span style={rowLabelStyle}>Budget range</span>
+                <span style={{ fontSize: 13, color: 'var(--fg-1)' }}>{profile.icp.budget_range}</span>
               </div>
             )}
             {profile.icp.pain_points && profile.icp.pain_points.length > 0 && (
-              <div>
-                <dt className="text-[var(--text-muted)] mb-2">Pain points</dt>
-                <dd>
-                  <ul className="space-y-1">
-                    {profile.icp.pain_points.map((p, i) => (
-                      <li key={i} className="flex gap-2 text-[var(--text-primary)]">
-                        <span className="text-[var(--text-muted)] shrink-0">·</span>
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                </dd>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <span style={rowLabelStyle}>Pain points</span>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {profile.icp.pain_points.map((p, i) => (
+                    <li key={i} style={{ fontSize: 13, color: 'var(--fg-1)', display: 'flex', gap: 6 }}>
+                      <span style={{ color: 'var(--fg-3)' }}>·</span>{p}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
-          </dl>
-        </section>
+          </div>
+        </div>
       )}
 
       {profile.positioning && (
-        <section className="rounded-lg border border-[var(--border-color)] bg-[var(--surface)] p-5">
-          <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Positioning</h3>
-          <div className="space-y-4 text-sm">
+        <div style={sectionStyle}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>
+            Positioning
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {profile.positioning.value_proposition && (
               <div>
-                <div className="text-[var(--text-muted)] mb-1">Value proposition</div>
-                <p className="text-[var(--text-primary)]">{profile.positioning.value_proposition}</p>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>Value proposition</div>
+                <p style={{ fontSize: 13, color: 'var(--fg-1)', margin: 0, lineHeight: 1.5 }}>{profile.positioning.value_proposition}</p>
               </div>
             )}
             {profile.positioning.differentiators && profile.positioning.differentiators.length > 0 && (
               <div>
-                <div className="text-[var(--text-muted)] mb-2">Differentiators</div>
-                <ul className="space-y-1">
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Differentiators</div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
                   {profile.positioning.differentiators.map((d, i) => (
-                    <li key={i} className="flex gap-2 text-[var(--text-primary)]">
-                      <span className="text-[var(--text-muted)] shrink-0">·</span>
-                      {d}
+                    <li key={i} style={{ fontSize: 13, color: 'var(--fg-1)', display: 'flex', gap: 6 }}>
+                      <span style={{ color: 'var(--fg-3)' }}>·</span>{d}
                     </li>
                   ))}
                 </ul>
@@ -122,63 +137,51 @@ export function AnalysisDisplay({ profile }: AnalysisDisplayProps) {
             )}
             {profile.positioning.competitors && profile.positioning.competitors.length > 0 && (
               <div>
-                <div className="text-[var(--text-muted)] mb-2">Competitors</div>
-                <div className="flex flex-wrap gap-1.5">
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Competitors</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                   {profile.positioning.competitors.map((c, i) => (
-                    <Badge
-                      key={i}
-                      variant="outline"
-                      className="text-xs border-[var(--border-color)] text-[var(--text-secondary)]"
-                    >
-                      {c}
-                    </Badge>
+                    <span key={i} className="chip">{c}</span>
                   ))}
                 </div>
               </div>
             )}
           </div>
-        </section>
+        </div>
       )}
 
       {profile.growth_brief && (
-        <section className="rounded-lg border border-[var(--border-color)] bg-[var(--surface)] p-5">
-          <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-4">Growth Brief</h3>
-          <div className="space-y-4 text-sm">
-            {profile.growth_brief.summary && (
-              <p className="text-[var(--text-primary)]">{profile.growth_brief.summary}</p>
-            )}
-            {profile.growth_brief.partnership_categories &&
-              profile.growth_brief.partnership_categories.length > 0 && (
-                <div>
-                  <div className="text-[var(--text-muted)] mb-2">Partnership categories</div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {profile.growth_brief.partnership_categories.map((c, i) => (
-                      <Badge
-                        key={i}
-                        className="text-xs bg-[var(--accent-subtle)] text-[var(--accent)] border-0 hover:bg-[var(--accent-subtle)]"
-                      >
-                        {c}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-            {profile.growth_brief.recommended_channels &&
-              profile.growth_brief.recommended_channels.length > 0 && (
-                <div>
-                  <div className="text-[var(--text-muted)] mb-2">Recommended channels</div>
-                  <ul className="space-y-1">
-                    {profile.growth_brief.recommended_channels.map((c, i) => (
-                      <li key={i} className="flex gap-2 text-[var(--text-primary)]">
-                        <span className="text-[var(--text-muted)] shrink-0">·</span>
-                        {c}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+        <div style={sectionStyle}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>
+            Growth Brief
           </div>
-        </section>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {profile.growth_brief.summary && (
+              <p style={{ fontSize: 13, color: 'var(--fg-1)', margin: 0, lineHeight: 1.5 }}>{profile.growth_brief.summary}</p>
+            )}
+            {profile.growth_brief.partnership_categories && profile.growth_brief.partnership_categories.length > 0 && (
+              <div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Partnership categories</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {profile.growth_brief.partnership_categories.map((c, i) => (
+                    <span key={i} className="chip active">{c}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {profile.growth_brief.recommended_channels && profile.growth_brief.recommended_channels.length > 0 && (
+              <div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Recommended channels</div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  {profile.growth_brief.recommended_channels.map((c, i) => (
+                    <li key={i} style={{ fontSize: 13, color: 'var(--fg-1)', display: 'flex', gap: 6 }}>
+                      <span style={{ color: 'var(--fg-3)' }}>·</span>{c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   )

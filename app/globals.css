@@ -167,6 +167,11 @@ body {
   }
 }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 /* ── Page layout ──────────────────────────────────────────── */
 .page {
   padding: 22px 28px 60px;
