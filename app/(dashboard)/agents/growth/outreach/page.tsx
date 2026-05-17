@@ -19,7 +19,7 @@ export default async function GrowthOutreachPage() {
             No drafts yet — approve opportunities to generate AI outreach.
           </p>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 720 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {drafts.map(draft => (
               <OutreachDraftCard key={draft.id} draft={draft} />
             ))}

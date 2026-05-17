@@ -24,7 +24,7 @@ export default async function GrowthAnalyticsPage() {
 
   return (
     <div className="hub-body fade-in">
-      <div className="tile-row">
+      <div className="tile-row" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
         {tiles.map(t => (
           <div className="tile" key={t.label}>
             <div className="tile-label">{t.label}</div>
