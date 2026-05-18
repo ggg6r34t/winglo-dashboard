@@ -1,6 +1,6 @@
 import type { AgentConfig } from '@/lib/agents/registry'
 
-type MemRecord = { key: string; val: string; source: string; conf: number; time: string }
+export type MemRecord = { key: string; val: string; source: string; conf: number; time: string }
 
 const MEMORY: Record<string, MemRecord[]> = {
   'social-media': [
@@ -68,8 +68,8 @@ function ConfBar({ conf }: { conf: number }) {
   )
 }
 
-export function MemoryTab({ agent }: { agent: AgentConfig }) {
-  const records = MEMORY[agent.slug] ?? []
+export function MemoryTab({ agent, records: recordsProp }: { agent: AgentConfig; records?: MemRecord[] }) {
+  const records = recordsProp ?? MEMORY[agent.slug] ?? []
   const avgConf = records.length
     ? records.reduce((s, r) => s + r.conf, 0) / records.length
     : 0
