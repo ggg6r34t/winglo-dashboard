@@ -7,14 +7,14 @@ const GROWTH_TABS: HubTab[] = [
   { label: 'Intake',        href: '/agents/growth/intake' },
   { label: 'Opportunities', href: '/agents/growth/opportunities' },
   { label: 'Pipeline',      href: '/agents/growth/pipeline' },
-  { label: 'Workflows',     href: '/agents/growth/workflows' },
+  { label: 'Outreach',      href: '/agents/growth/outreach' },
   { label: 'Calendar',      href: '/agents/growth/calendar' },
   { label: 'Activity',      href: '/agents/growth/activity' },
-  { label: 'Outreach',      href: '/agents/growth/outreach' },
-  { label: 'Reports',       href: '/agents/growth/reports' },
-  { label: 'Memory',        href: '/agents/growth/memory' },
   { label: 'Analytics',     href: '/agents/growth/analytics' },
+  { label: 'Reports',       href: '/agents/growth/reports' },
+  { label: 'Workflows',     href: '/agents/growth/workflows' },
   { label: 'Integrations',  href: '/agents/growth/integrations' },
+  { label: 'Memory',        href: '/agents/growth/memory' },
   { label: 'Settings',      href: '/agents/growth/settings' },
 ]
 
