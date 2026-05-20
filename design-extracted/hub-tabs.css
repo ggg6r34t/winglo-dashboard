@@ -1,0 +1,428 @@
+/* Agent hub tab-page styles */
+
+/* Shared: section title styling in tabs */
+.hub-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* ============================================
+   Operations tab
+   ============================================ */
+.ops-layout {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 22px;
+  margin-top: 22px;
+}
+.ops-current {
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  margin-bottom: 22px;
+}
+.ops-current-task {
+  font-size: 14px;
+  color: var(--fg-0);
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  margin-bottom: 14px;
+}
+.ops-progress-detail {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-1);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.ops-progress-detail .pd-label {
+  color: var(--fg-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 10px;
+  margin-bottom: 3px;
+}
+.ops-progress-detail .pd-val { color: var(--fg-0); font-size: 12px; }
+
+.activity-stream {
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-lg);
+  padding: 14px 18px;
+}
+.activity-stream .activity-item:first-child { padding-top: 0; }
+.activity-stream .activity-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.quick-action {
+  padding: 12px 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all 120ms ease;
+  text-align: left;
+  font-family: inherit;
+  color: var(--fg-1);
+}
+.quick-action:hover { background: var(--bg-3); border-color: var(--line-3); color: var(--fg-0); }
+.quick-action .qa-title { font-size: 12.5px; color: var(--fg-0); margin-bottom: 3px; letter-spacing: -0.005em; }
+.quick-action .qa-meta { font-family: var(--font-mono); font-size: 10px; color: var(--fg-3); }
+
+/* ============================================
+   Pipeline tab — full board
+   ============================================ */
+.pipe-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.pipe-board .pipe-col {
+  min-height: 480px;
+  max-height: calc(100vh - 360px);
+  overflow-y: auto;
+}
+.pipe-board-summary {
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-lg);
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+}
+.pipe-summary-stat .lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 3px;
+}
+.pipe-summary-stat .val {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--fg-0);
+  letter-spacing: -0.015em;
+}
+.pipe-card .pipe-tag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--bg-3);
+  color: var(--fg-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--line-1);
+}
+
+/* ============================================
+   Calendar tab — full month
+   ============================================ */
+.cal-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 22px;
+  align-items: start;
+}
+.cal-full {
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-lg);
+  padding: 18px;
+}
+.cal-full-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.cal-month-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cal-month-title {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--fg-0);
+}
+.cal-weekheader {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line-1);
+}
+.cal-weekheader > div {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: left;
+  padding: 0 4px;
+}
+.cal-full-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-day {
+  min-height: 96px;
+  background: var(--bg-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 120ms ease;
+  position: relative;
+}
+.cal-day:hover { border-color: var(--line-2); }
+.cal-day.outside { opacity: 0.35; }
+.cal-day.today { border-color: var(--accent-line); background: oklch(0.80 0.12 75 / 0.05); }
+.cal-day.selected { background: var(--bg-3); border-color: var(--line-3); }
+.cal-day-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-2);
+  letter-spacing: 0;
+}
+.cal-day.today .cal-day-num { color: var(--accent); }
+.cal-event {
+  font-size: 10.5px;
+  color: var(--fg-0);
+  background: var(--bg-3);
+  border-left: 2px solid var(--fg-3);
+  padding: 2px 4px;
+  border-radius: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+.cal-event.post { border-left-color: oklch(0.65 0.14 320); }
+.cal-event.scheduled { border-left-color: oklch(0.65 0.14 240); }
+.cal-event.task { border-left-color: oklch(0.80 0.12 75); }
+.cal-event.meeting { border-left-color: oklch(0.65 0.14 145); }
+.cal-event.ops { border-left-color: oklch(0.50 0.005 250); color: var(--fg-1); }
+.cal-event.launch { border-left-color: var(--accent); background: var(--accent-soft); color: var(--fg-0); }
+.cal-event.draft { border-left-color: oklch(0.50 0.04 60); color: var(--fg-2); }
+.cal-event-more { font-size: 10px; color: var(--fg-3); font-family: var(--font-mono); padding: 0 4px; }
+
+.day-detail {
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  position: sticky;
+  top: 22px;
+}
+.day-detail-head {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line-1);
+}
+.day-detail-date {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-3);
+  margin-bottom: 3px;
+}
+.day-detail-title {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--fg-0);
+}
+.day-event {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--line-1);
+}
+.day-event:last-child { border-bottom: none; }
+.day-event-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-2);
+  padding-top: 1px;
+}
+.day-event-body .day-event-title {
+  font-size: 12.5px;
+  color: var(--fg-0);
+  letter-spacing: -0.005em;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+.day-event-tag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--bg-3);
+  color: var(--fg-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--line-1);
+  display: inline-block;
+}
+
+/* ============================================
+   Workflows tab (in hub)
+   ============================================ */
+.wf-tab-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.wf-tab-card {
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-lg);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+.wf-tab-card:hover { background: var(--bg-2); border-color: var(--line-2); }
+.wf-tab-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.wf-tab-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.wf-tab-state .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.wf-tab-state .dot.run { background: var(--accent); }
+.wf-tab-state .dot.done { background: var(--ok); }
+.wf-tab-state .dot.wait { background: var(--warn); }
+.wf-tab-title {
+  font-size: 13.5px;
+  color: var(--fg-0);
+  letter-spacing: -0.005em;
+  line-height: 1.4;
+  margin-bottom: 14px;
+}
+.wf-tab-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-1);
+}
+.wf-tab-stat .lbl {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-3);
+  margin-bottom: 2px;
+}
+.wf-tab-stat .val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-0);
+}
+.wf-tab-stat .val.ok { color: var(--ok); }
+.wf-tab-stat .val.warn { color: var(--warn); }
+.wf-tab-foot {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-3);
+}
+
+/* ============================================
+   Memory tab (in hub)
+   ============================================ */
+.memory-tab-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 22px;
+  align-items: start;
+}
+.memory-side-card {
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-lg);
+  padding: 16px 18px;
+}
+.memory-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--line-1);
+  font-size: 12px;
+}
+.memory-stat-row:last-child { border-bottom: none; }
+.memory-stat-row .key { color: var(--fg-2); }
+.memory-stat-row .val { font-family: var(--font-mono); color: var(--fg-0); }
+.knowledge-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+/* ============================================
+   Integrations tab (in hub)
+   ============================================ */
+.integ-tab-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* Empty-state shell */
+.tab-empty {
+  background: var(--bg-1);
+  border: 1px solid var(--line-1);
+  border-radius: var(--r-lg);
+  padding: 60px;
+  text-align: center;
+  color: var(--fg-3);
+  font-size: 13px;
+}
+.tab-empty .icn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  border: 1px solid var(--line-2);
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 12px;
+  color: var(--fg-2);
+}
