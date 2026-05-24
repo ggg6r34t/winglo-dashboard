@@ -26,9 +26,10 @@ const App = () => {
   const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
 
   const agent = activeAgent && window.WingloData.AGENT_BY_ID[activeAgent];
+  const hideRightPanel = view === "hub" && agent?.id === "marketing";
 
   return (
-    <div className="app">
+    <div className={"app" + (hideRightPanel ? " app--no-rightpanel" : "")}>
       <Sidebar
         view={view}
         activeAgent={activeAgent}
@@ -77,7 +78,7 @@ const App = () => {
         </div>
       </main>
 
-      <RightPanel onOpenAgent={onSelectAgent} />
+      {!hideRightPanel && <RightPanel onOpenAgent={onSelectAgent} />}
 
       {window.LiveOpsDock && <window.LiveOpsDock />}
     </div>

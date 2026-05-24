@@ -485,6 +485,11 @@ const AgentHub = ({ agentId, onBack }) => {
 
   if (!agent) return null;
 
+  // Orion — Marketing Manager — has a fully custom conversational hub.
+  if (agent.id === "marketing" && window.OrionHub) {
+    return <window.OrionHub agent={agent} onBack={onBack} />;
+  }
+
   return (
     <div className="fade-in" key={agent.id}>
       <AgentHubHero agent={agent} onBack={onBack} />
