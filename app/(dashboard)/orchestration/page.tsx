@@ -2,13 +2,14 @@ import { PageHeader } from '@/components/shared/page-header'
 import { OrchestrationPageClient } from '@/features/orchestration/components/orchestration-page-client'
 import { getAIRuns, getOrgAgentLogs } from '@/server/dal/ai-runs'
 import { getOrganizationById } from '@/server/dal/organizations'
-import { MOCK_ORG_ID } from '@/lib/mock'
+import { getCurrentOrgId } from '@/server/auth/org'
 
 export default async function OrchestrationPage() {
+  const orgId = await getCurrentOrgId()
   const [initialRuns, initialLogs, org] = await Promise.all([
-    getAIRuns(MOCK_ORG_ID, { limit: 20 }),
-    getOrgAgentLogs(MOCK_ORG_ID, 100),
-    getOrganizationById(MOCK_ORG_ID),
+    getAIRuns(orgId, { limit: 20 }),
+    getOrgAgentLogs(orgId, 100),
+    getOrganizationById(orgId),
   ])
 
   return (

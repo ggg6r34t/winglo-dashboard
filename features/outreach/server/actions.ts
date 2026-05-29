@@ -16,6 +16,7 @@ import type { OutreachDraft, OutreachChannel, OutreachTone } from '@/types'
 import { revalidatePath } from 'next/cache'
 import { getClientKey } from '@/lib/get-client-key'
 import { outreachRateLimiter } from '@/lib/rate-limiters'
+import { createActivityEvent } from '@/server/dal/activity-events'
 
 const ORG_ID = MOCK_ORG_ID
 
@@ -72,6 +73,15 @@ export async function generateOutreachDraft(
       completed_at: new Date().toISOString(),
     })
     createAgentLog(ORG_ID, run.id, 'info', 'Outreach draft generation complete', { tokens: result.tokensUsed }).catch(() => {})
+    createActivityEvent(ORG_ID, {
+      agent_slug: 'growth',
+      actor_type: 'agent',
+      event_type: 'outreach_draft.created',
+      entity_type: 'outreach_draft',
+      entity_id: draft.id,
+      severity: 'info',
+      message: `Outreach draft generated for ${opportunity.company_name}`,
+    }).catch(() => {})
 
     revalidatePath('/outreach')
     return draft
@@ -89,12 +99,32 @@ export async function generateOutreachDraft(
 
 export async function approveOutreachDraft(id: string): Promise<OutreachDraft> {
   const updated = await updateOutreachDraftStatus(id, 'approved')
+  await createActivityEvent(ORG_ID, {
+    agent_slug: 'growth',
+    actor_type: 'user',
+    event_type: 'outreach_draft.approved',
+    entity_type: 'outreach_draft',
+    entity_id: updated.id,
+    severity: 'success',
+    message: `Outreach draft approved: ${updated.subject ?? updated.channel}`,
+  })
   revalidatePath('/outreach')
+  revalidatePath('/agents/growth/outreach')
   return updated
 }
 
 export async function markOutreachSent(id: string): Promise<OutreachDraft> {
   const updated = await updateOutreachDraftStatus(id, 'sent')
+  await createActivityEvent(ORG_ID, {
+    agent_slug: 'growth',
+    actor_type: 'user',
+    event_type: 'outreach_draft.sent',
+    entity_type: 'outreach_draft',
+    entity_id: updated.id,
+    severity: 'success',
+    message: `Outreach marked sent: ${updated.subject ?? updated.channel}`,
+  })
   revalidatePath('/outreach')
+  revalidatePath('/agents/growth/outreach')
   return updated
 }

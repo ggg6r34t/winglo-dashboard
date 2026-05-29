@@ -1,5 +1,5 @@
 import { getOpportunities } from '@/server/dal/opportunities'
-import { MOCK_ORG_ID } from '@/lib/mock'
+import { getCurrentOrgId } from '@/server/auth/org'
 import { FilterBar } from '@/features/opportunities/components/filter-bar'
 import { OpportunityCard } from '@/features/opportunities/components/opportunity-card'
 import type { OpportunityStatus } from '@/types'
@@ -19,7 +19,8 @@ export default async function GrowthOpportunitiesPage({ searchParams }: PageProp
   const currentStatus = (status as OpportunityStatus | 'all') || 'all'
   const currentMinScore = params.minScore ?? ''
 
-  const opportunities = await getOpportunities(MOCK_ORG_ID, { status, minScore })
+  const orgId = await getCurrentOrgId()
+  const opportunities = await getOpportunities(orgId, { status, minScore })
 
   return (
     <div className="hub-body fade-in">

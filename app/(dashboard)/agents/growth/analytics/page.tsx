@@ -2,10 +2,11 @@ import { OutreachChart } from '@/features/analytics/components/outreach-chart'
 import { InsightsPanel } from '@/features/analytics/components/insights-panel'
 import { GenerateSnapshotButton } from '@/features/analytics/components/generate-snapshot-button'
 import { getAnalyticsSnapshots } from '@/server/dal/analytics-snapshots'
-import { MOCK_ORG_ID } from '@/lib/mock'
+import { getCurrentOrgId } from '@/server/auth/org'
 
 export default async function GrowthAnalyticsPage() {
-  const allSnapshots = await getAnalyticsSnapshots(MOCK_ORG_ID, { days: 90 })
+  const orgId = await getCurrentOrgId()
+  const allSnapshots = await getAnalyticsSnapshots(orgId, { days: 90 })
   const last30 = allSnapshots.slice(-30)
   const latestSnapshot = allSnapshots.at(-1) ?? null
 

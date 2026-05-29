@@ -2,13 +2,14 @@ import { PageHeader } from '@/components/shared/page-header'
 import { AgentCard } from '@/components/agents/agent-card'
 import { AGENT_REGISTRY } from '@/lib/agents/registry'
 import { getAIRuns, getActiveAIRuns } from '@/server/dal/ai-runs'
-import { MOCK_ORG_ID } from '@/lib/mock'
+import { getCurrentOrgId } from '@/server/auth/org'
 import type { AgentStatus } from '@/components/agents/agent-status-badge'
 
 async function loadData() {
+  const orgId = await getCurrentOrgId()
   const [recentRuns, activeRuns] = await Promise.all([
-    getAIRuns(MOCK_ORG_ID, { limit: 50 }),
-    getActiveAIRuns(MOCK_ORG_ID),
+    getAIRuns(orgId, { limit: 50 }),
+    getActiveAIRuns(orgId),
   ])
   return { recentRuns, activeRuns }
 }

@@ -1,11 +1,12 @@
 import { Skeleton } from '@/components/shared/skeleton'
 import { getLatestBusinessProfile } from '@/server/dal/business-profiles'
-import { MOCK_ORG_ID } from '@/lib/mock'
+import { getCurrentOrgId } from '@/server/auth/org'
 import { IntakeForm } from '@/features/intake/components/intake-form'
 import { AnalysisDisplay } from '@/features/intake/components/analysis-display'
 
 export default async function GrowthIntakePage() {
-  const profile = await getLatestBusinessProfile(MOCK_ORG_ID)
+  const orgId = await getCurrentOrgId()
+  const profile = await getLatestBusinessProfile(orgId)
 
   return (
     <div className="hub-body fade-in">

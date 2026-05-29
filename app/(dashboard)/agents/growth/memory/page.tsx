@@ -1,7 +1,7 @@
 import { MemoryTab, type MemRecord } from '@/components/agents/tabs/memory-tab'
 import { getAgentBySlug } from '@/lib/agents/registry'
 import { getMemoryEntries } from '@/server/dal/memory-entries'
-import { MOCK_ORG_ID } from '@/lib/mock'
+import { getCurrentOrgId } from '@/server/auth/org'
 import type { MemoryEntry } from '@/types/database'
 
 function relativeTime(iso: string): string {
@@ -24,7 +24,8 @@ function toMemRecord(entry: MemoryEntry): MemRecord {
 }
 
 export default async function GrowthMemoryPage() {
-  const entries = await getMemoryEntries(MOCK_ORG_ID).catch(() => [])
+  const orgId = await getCurrentOrgId()
+  const entries = await getMemoryEntries(orgId).catch(() => [])
   return (
     <MemoryTab
       agent={getAgentBySlug('growth')}

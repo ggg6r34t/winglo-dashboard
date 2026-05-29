@@ -13,6 +13,8 @@ import { MOCK_ORG_ID } from '@/lib/mock'
 import { revalidatePath } from 'next/cache'
 import { getClientKey } from '@/lib/get-client-key'
 import { analyticsRateLimiter } from '@/lib/rate-limiters'
+import { createReport } from '@/server/dal/reports'
+import { createActivityEvent } from '@/server/dal/activity-events'
 
 const ORG_ID = MOCK_ORG_ID
 
@@ -63,8 +65,28 @@ export async function generateAnalyticsInsights(): Promise<AnalyticsOutput> {
       completed_at: new Date().toISOString(),
     })
     createAgentLog(ORG_ID, run.id, 'info', 'Analytics insights generation complete', { tokens: result.tokensUsed }).catch(() => {})
+    await createReport(ORG_ID, {
+      agent_slug: 'analytics-manager',
+      source_run_id: run.id,
+      title: result.content.highlight_metric.label,
+      summary: result.content.summary,
+      category: 'Insight',
+      status: 'published',
+      pinned: false,
+      tags: ['analytics', 'ai-insight'],
+    })
+    createActivityEvent(ORG_ID, {
+      agent_slug: 'analytics-manager',
+      actor_type: 'agent',
+      event_type: 'report.created',
+      entity_type: 'ai_run',
+      entity_id: run.id,
+      severity: 'success',
+      message: 'Analytics insight report generated',
+    }).catch(() => {})
 
     revalidatePath('/analytics')
+    revalidatePath('/workspace/reports')
     return result.content
   } catch (error) {
     await updateAIRun(run.id, {

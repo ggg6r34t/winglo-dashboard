@@ -1,9 +1,10 @@
 import { OutreachDraftCard } from '@/features/outreach/components/outreach-draft-card'
 import { getOutreachDrafts } from '@/server/dal/outreach-drafts'
-import { MOCK_ORG_ID } from '@/lib/mock'
+import { getCurrentOrgId } from '@/server/auth/org'
 
 export default async function GrowthOutreachPage() {
-  const drafts = await getOutreachDrafts(MOCK_ORG_ID).catch(() => [])
+  const orgId = await getCurrentOrgId()
+  const drafts = await getOutreachDrafts(orgId).catch(() => [])
 
   return (
     <div className="hub-body fade-in">

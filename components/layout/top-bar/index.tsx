@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { InboxCountBadge } from "@/components/workspace/inbox-count-badge";
 
 function buildCrumbs(pathname: string): string[] {
   if (pathname.startsWith("/agents/")) {
@@ -138,10 +139,15 @@ export function TopBar() {
         </IconBtn>
 
         <IconBtn title="Notifications">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M6 8a6 6 0 0 1 12 0v5l2 3H4l2-3z" />
-            <path d="M10 19a2 2 0 0 0 4 0" />
-          </svg>
+          <span style={{ position: "relative", display: "grid", placeItems: "center" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0v5l2 3H4l2-3z" />
+              <path d="M10 19a2 2 0 0 0 4 0" />
+            </svg>
+            <span style={{ position: "absolute", top: -9, right: -10, fontSize: 9, fontFamily: "var(--font-mono)", color: "var(--accent)" }}>
+              <InboxCountBadge />
+            </span>
+          </span>
         </IconBtn>
       </div>
     </header>

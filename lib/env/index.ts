@@ -1,22 +1,30 @@
 import { z } from 'zod'
+import { assertMockDataAllowed, parseRuntimeEnv } from './runtime'
 
 const envSchema = z.object({
+  appEnv: z.enum(['local', 'preview', 'production']).default('local'),
   supabaseUrl: z.string().url().min(1),
   supabaseAnonKey: z.string().min(1),
   supabaseServiceRoleKey: z.string().min(1),
   openaiApiKey: z.string().min(1),
   aiProvider: z.enum(['openai', 'anthropic']).default('openai'),
   useMockData: z.boolean(),
+  allowPreviewMockData: z.boolean(),
 })
 
 function parseEnv() {
+  const runtimeEnv = parseRuntimeEnv(process.env)
+  assertMockDataAllowed(runtimeEnv)
+
   const raw = {
+    appEnv: runtimeEnv.appEnv,
     supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
     supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
     supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? '',
     openaiApiKey: process.env.OPENAI_API_KEY ?? '',
     aiProvider: process.env.AI_PROVIDER ?? 'openai',
-    useMockData: process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true',
+    useMockData: runtimeEnv.useMockData,
+    allowPreviewMockData: runtimeEnv.allowPreviewMockData,
   }
 
   if (raw.useMockData) {

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useOrchestrationStore } from '@/features/orchestration/hooks/use-orchestration-store'
 import { AGENT_REGISTRY } from '@/lib/agents/registry'
+import { InboxCountBadge } from '@/components/workspace/inbox-count-badge'
 
 /* ── Agent glyph tones ──────────────────────────────────── */
 const GLYPH_TONES: Record<string, { mark: string; bg: string; fg: string }> = {
@@ -52,7 +53,7 @@ function NavIcon({ name }: { name: string }) {
 }
 
 /* ── Nav item ────────────────────────────────────────────── */
-function NavItem({ href, icon, label, badge, accentBadge }: { href: string; icon: string; label: string; badge?: string; accentBadge?: boolean }) {
+function NavItem({ href, icon, label, badge, badgeNode, accentBadge }: { href: string; icon: string; label: string; badge?: string; badgeNode?: React.ReactNode; accentBadge?: boolean }) {
   const pathname = usePathname()
   const active = pathname === href || (href !== '/workspace' && pathname.startsWith(href))
   return (
@@ -78,13 +79,13 @@ function NavItem({ href, icon, label, badge, accentBadge }: { href: string; icon
         <NavIcon name={icon} />
       </span>
       <span>{label}</span>
-      {badge && (
+      {(badge || badgeNode) && (
         <span style={{
           marginLeft: 'auto',
           fontFamily: 'var(--font-mono)',
           fontSize: 10.5,
           color: accentBadge ? 'var(--accent)' : 'var(--fg-3)',
-        }}>{badge}</span>
+        }}>{badgeNode ?? badge}</span>
       )}
     </Link>
   )
@@ -261,7 +262,7 @@ export function Sidebar() {
       <div style={{ padding: '12px 8px 4px', flexShrink: 0 }}>
         <SectionLabel>Workspace</SectionLabel>
         <NavItem href="/workspace" icon="home" label="Overview" />
-        <NavItem href="/workspace/inbox" icon="inbox" label="Inbox" badge="12" />
+        <NavItem href="/workspace/inbox" icon="inbox" label="Inbox" badgeNode={<InboxCountBadge />} />
         <NavItem href="/workspace/approvals" icon="check" label="Approvals" badge="3" accentBadge />
         <NavItem href="/workspace/reports" icon="report" label="Reports" />
         <NavItem href="/workspace/analytics" icon="chart" label="Analytics" />

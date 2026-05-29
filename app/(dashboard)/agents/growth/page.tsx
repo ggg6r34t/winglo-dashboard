@@ -1,20 +1,21 @@
 import { getOpportunities } from '@/server/dal/opportunities'
 import { getAIRuns, getActiveAIRuns } from '@/server/dal/ai-runs'
-import { MOCK_ORG_ID } from '@/lib/mock'
+import { getCurrentOrgId } from '@/server/auth/org'
 import Link from 'next/link'
 
 const RUN_STATE: Record<string, string> = {
   running:   'run',
-  completed: 'done',
+  complete:  'done',
   queued:    'wait',
   failed:    'wait',
 }
 
 async function loadData() {
+  const orgId = await getCurrentOrgId()
   const [opportunities, recentRuns, activeRuns] = await Promise.all([
-    getOpportunities(MOCK_ORG_ID, { limit: 100 }),
-    getAIRuns(MOCK_ORG_ID, { limit: 5 }),
-    getActiveAIRuns(MOCK_ORG_ID),
+    getOpportunities(orgId, { limit: 100 }),
+    getAIRuns(orgId, { limit: 5 }),
+    getActiveAIRuns(orgId),
   ])
   return { opportunities, recentRuns, activeRuns }
 }

@@ -134,3 +134,29 @@ export async function searchMemoriesBySimilarity(
   if (error) throw error
   return (data ?? []) as MemoryEntry[]
 }
+
+export async function retractMemoryEntry(id: string): Promise<MemoryEntry> {
+  if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
+    const existing = mockMemoryEntries.find(m => m.id === id)
+    if (!existing) throw new Error(`MemoryEntry ${id} not found`)
+    return {
+      ...existing,
+      metadata: { ...existing.metadata, status: 'retracted' },
+    }
+  }
+
+  const supabase = await createServiceClient()
+  const { data, error } = await supabase
+    .from('memory_entries')
+    .update({
+      status: 'retracted',
+      retracted_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
