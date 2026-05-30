@@ -1,4 +1,4 @@
-import type { Approval, ApprovalStatus } from '@/types'
+import type { Approval, ApprovalCounts, ApprovalStatus } from '@/types'
 import { createServiceClient } from '@/lib/supabase/server'
 
 const mockApprovals: Approval[] = [
@@ -40,12 +40,14 @@ const mockApprovals: Approval[] = [
   },
 ]
 
+const mockApprovalStore = new Map<string, Approval>(mockApprovals.map(item => [item.id, item]))
+
 export async function getApprovals(
   orgId: string,
   options: { status?: ApprovalStatus; limit?: number } = {},
 ): Promise<Approval[]> {
   if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-    let approvals = mockApprovals.filter(item => item.organization_id === orgId)
+    let approvals = Array.from(mockApprovalStore.values()).filter(item => item.organization_id === orgId)
     if (options.status) approvals = approvals.filter(item => item.status === options.status)
     if (options.limit) approvals = approvals.slice(0, options.limit)
     return approvals
@@ -65,21 +67,31 @@ export async function getApprovals(
 }
 
 export async function decideApproval(
+  orgId: string,
   id: string,
   status: Extract<ApprovalStatus, 'approved' | 'rejected'>,
-  decisionNote?: string,
+  options: { decisionNote?: string; actorId?: string } = {},
 ): Promise<Approval> {
+  const decisionNote = options.decisionNote?.trim() || null
+  if (status === 'rejected' && !decisionNote) {
+    throw new Error('Rejection note is required')
+  }
+
   if (process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true') {
-    const existing = mockApprovals.find(item => item.id === id)
+    const existing = mockApprovalStore.get(id)
     if (!existing) throw new Error(`Approval ${id} not found`)
-    return {
+    if (existing.organization_id !== orgId) throw new Error(`Approval ${id} not found`)
+    if (existing.status !== 'pending') throw new Error(`Approval ${id} has already been decided`)
+    const updated = {
       ...existing,
       status,
-      decision_note: decisionNote ?? null,
-      decided_by: 'mock-user',
+      decision_note: decisionNote,
+      decided_by: options.actorId ?? 'mock-user',
       decided_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }
+    mockApprovalStore.set(id, updated)
+    return updated
   }
 
   const supabase = await createServiceClient()
@@ -87,13 +99,30 @@ export async function decideApproval(
     .from('approvals')
     .update({
       status,
-      decision_note: decisionNote ?? null,
+      decision_note: decisionNote,
+      decided_by: options.actorId ?? null,
       decided_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
+    .eq('organization_id', orgId)
     .eq('id', id)
+    .eq('status', 'pending')
     .select()
     .single()
   if (error) throw error
   return data
+}
+
+export async function getApprovalCounts(orgId: string): Promise<ApprovalCounts> {
+  const approvals = await getApprovals(orgId)
+  return {
+    pending: approvals.filter(item => item.status === 'pending').length,
+    approved: approvals.filter(item => item.status === 'approved').length,
+    rejected: approvals.filter(item => item.status === 'rejected').length,
+    byUrgency: {
+      low: approvals.filter(item => item.status === 'pending' && item.urgency === 'low').length,
+      med: approvals.filter(item => item.status === 'pending' && item.urgency === 'med').length,
+      high: approvals.filter(item => item.status === 'pending' && item.urgency === 'high').length,
+    },
+  }
 }

@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
+import { ApprovalCountBadge } from "@/components/workspace/approval-count-badge";
 import { useOrchestrationStore } from "@/features/orchestration/hooks/use-orchestration-store";
-import { AGENT_REGISTRY } from "@/lib/agents/registry";
 import type { AgentType } from "@/types";
 
 /* ── Static display data (enriches live store data) ────── */
@@ -14,12 +15,6 @@ const ACTIVITY_FEED = [
   { agentId: "growth",     verb: "completed",   target: "discovery run",          detail: "142 pages crawled, 0 errors",        time: "22m ago", ref: "AC-4894" },
   { agentId: "growth",     verb: "flagged",     target: "ICP mismatch",           detail: "Northwind Capital — excluded",       time: "31m ago", ref: "AC-4891" },
   { agentId: "growth",     verb: "updated",     target: "memory record",          detail: "customer.icp refined post-W22",     time: "44m ago", ref: "AC-4885" },
-];
-
-const APPROVALS_QUEUE = [
-  { agentId: "growth", type: "outreach", title: "Outbound to 280 Series A SaaS contacts", detail: "Enrichment + send cost ~$84. Requires sign-off above $50 threshold." },
-  { agentId: "growth", type: "publish",  title: "Partnership announcement draft — Coil",    detail: "Email + LinkedIn variant ready. Embargo date Thu 09:00." },
-  { agentId: "growth", type: "spend",    title: "Apollo enrichment — 600 contacts",          detail: "Monthly credit top-up requested. $120 estimate." },
 ];
 
 const MEMORY_UPDATES = [
@@ -104,7 +99,7 @@ export function RightPanel() {
           {(["activity", "approvals", "memory"] as RpTab[]).map(t => {
             const counts: Record<RpTab, number> = {
               activity: feedEvents.length || ACTIVITY_FEED.length,
-              approvals: APPROVALS_QUEUE.length,
+              approvals: 0,
               memory: MEMORY_UPDATES.length,
             };
             const labels: Record<RpTab, string> = { activity: "Activity", approvals: "Approvals", memory: "Memory" };
@@ -116,7 +111,7 @@ export function RightPanel() {
                   fontSize: 10,
                   color: tab === t ? "var(--fg-1)" : "var(--fg-3)",
                   marginLeft: 2,
-                }}>{counts[t]}</span>
+                }}>{t === "approvals" ? <ApprovalCountBadge /> : counts[t]}</span>
               </button>
             );
           })}
@@ -214,51 +209,38 @@ function ActivityTab({ feedEvents }: { feedEvents: Array<{ agentType: AgentType;
 function ApprovalsTab() {
   return (
     <div style={{ padding: "14px 16px" }}>
-      <Section title="Awaiting your decision" right={<span style={{ fontFamily: "var(--font-mono)", fontSize: 10.5, color: "var(--fg-3)" }}>{APPROVALS_QUEUE.length}</span>} />
-      {APPROVALS_QUEUE.map((a, i) => (
-        <div key={i} style={{
-          background: "var(--bg-2)",
-          border: "1px solid var(--line-2)",
-          borderRadius: "var(--r-md)",
-          padding: 12,
-          marginBottom: 8,
-        }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11.5, color: "var(--fg-1)" }}>
-              <AgentGlyph slug={a.agentId} size={16} />
-              <span>Growth</span>
-            </div>
-            <span style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 9.5,
-              color: "var(--fg-3)",
-              background: "var(--bg-3)",
-              padding: "1px 5px",
-              borderRadius: 3,
-              textTransform: "uppercase" as const,
-              letterSpacing: "0.04em",
-            }}>{a.type}</span>
+      <Section title="Awaiting your decision" right={<ApprovalCountBadge />} />
+      <div style={{
+        background: "var(--bg-2)",
+        border: "1px solid var(--line-2)",
+        borderRadius: "var(--r-md)",
+        padding: 12,
+        marginBottom: 8,
+      }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 11.5, color: "var(--fg-1)" }}>
+            <AgentGlyph slug="growth" size={16} />
+            <span>Workspace</span>
           </div>
-          <div style={{ fontSize: 12.5, color: "var(--fg-0)", marginBottom: 4, letterSpacing: "-0.005em" }}>{a.title}</div>
-          <div style={{ fontSize: 11.5, color: "var(--fg-2)", lineHeight: 1.5, marginBottom: 10 }}>{a.detail}</div>
-          <div style={{ display: "flex", gap: 6 }}>
-            {["Decline", "Discuss", "Approve"].map(label => (
-              <button key={label} style={{
-                flex: 1,
-                padding: "5px 10px",
-                fontSize: 11.5,
-                borderRadius: "var(--r-sm)",
-                border: "1px solid var(--line-2)",
-                background: label === "Approve" ? "var(--ok-soft)" : "var(--bg-3)",
-                color: label === "Approve" ? "var(--ok)" : "var(--fg-1)",
-                cursor: "pointer",
-                fontFamily: "inherit",
-                transition: "all 120ms ease",
-              }}>{label}</button>
-            ))}
-          </div>
+          <span style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 9.5,
+            color: "var(--fg-3)",
+            background: "var(--bg-3)",
+            padding: "1px 5px",
+            borderRadius: 3,
+            textTransform: "uppercase" as const,
+            letterSpacing: "0.04em",
+          }}>live</span>
         </div>
-      ))}
+        <div style={{ fontSize: 12.5, color: "var(--fg-0)", marginBottom: 4, letterSpacing: "-0.005em" }}>Production approval queue</div>
+        <div style={{ fontSize: 11.5, color: "var(--fg-2)", lineHeight: 1.5, marginBottom: 10 }}>
+          Review artifacts, add decision notes, and approve or reject with a durable audit trail.
+        </div>
+        <Link className="btn" href="/workspace/approvals">
+          Open approvals
+        </Link>
+      </div>
     </div>
   );
 }

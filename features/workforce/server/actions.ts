@@ -15,9 +15,13 @@ import {
   resolveInboxItem,
 } from '@/server/dal/inbox'
 
-export async function approveApprovalAction(id: string): Promise<void> {
+export async function approveApprovalAction(id: string, decisionNote?: string): Promise<void> {
   const orgId = await getCurrentOrgId()
-  const approval = await decideApproval(id, 'approved')
+  const userId = await getCurrentUserId()
+  const approval = await decideApproval(orgId, id, 'approved', {
+    actorId: userId,
+    decisionNote,
+  })
   await createActivityEvent(orgId, {
     agent_slug: approval.agent_slug,
     actor_type: 'user',
@@ -29,11 +33,16 @@ export async function approveApprovalAction(id: string): Promise<void> {
   })
   revalidatePath('/workspace/approvals')
   revalidatePath('/workspace')
+  revalidatePath('/workspace/inbox')
 }
 
-export async function rejectApprovalAction(id: string): Promise<void> {
+export async function rejectApprovalAction(id: string, decisionNote?: string): Promise<void> {
   const orgId = await getCurrentOrgId()
-  const approval = await decideApproval(id, 'rejected')
+  const userId = await getCurrentUserId()
+  const approval = await decideApproval(orgId, id, 'rejected', {
+    actorId: userId,
+    decisionNote,
+  })
   await createActivityEvent(orgId, {
     agent_slug: approval.agent_slug,
     actor_type: 'user',
@@ -45,6 +54,7 @@ export async function rejectApprovalAction(id: string): Promise<void> {
   })
   revalidatePath('/workspace/approvals')
   revalidatePath('/workspace')
+  revalidatePath('/workspace/inbox')
 }
 
 export async function updateWorkflowAction(formData: FormData): Promise<void> {
@@ -161,7 +171,7 @@ export async function approveInboxItemAction(id: string): Promise<void> {
   const item = await getInboxItem(orgId, id)
 
   if (item.source_type === 'approval' && item.source_id) {
-    const approval = await decideApproval(item.source_id, 'approved')
+    const approval = await decideApproval(orgId, item.source_id, 'approved', { actorId: userId })
     await createActivityEvent(orgId, {
       agent_slug: approval.agent_slug,
       actor_type: 'user',

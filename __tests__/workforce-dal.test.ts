@@ -23,7 +23,10 @@ describe('workforce DAL mock adapters', () => {
 
     expect(pending.length).toBeGreaterThan(0)
 
-    const approved = await decideApproval(pending[0].id, 'approved', 'Looks good')
+    const approved = await decideApproval(MOCK_ORG_ID, pending[0].id, 'approved', {
+      actorId: 'mock-user',
+      decisionNote: 'Looks good',
+    })
     expect(approved.status).toBe('approved')
     expect(approved.decision_note).toBe('Looks good')
   })

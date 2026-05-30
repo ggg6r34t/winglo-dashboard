@@ -231,6 +231,13 @@ export interface Approval {
   updated_at: string
 }
 
+export interface ApprovalCounts {
+  pending: number
+  approved: number
+  rejected: number
+  byUrgency: Record<ApprovalUrgency, number>
+}
+
 export type WorkflowStatus = 'run' | 'done' | 'wait'
 export type WorkflowRunStatus = 'done' | 'fail' | 'run'
 

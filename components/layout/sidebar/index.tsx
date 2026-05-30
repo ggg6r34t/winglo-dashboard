@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useOrchestrationStore } from '@/features/orchestration/hooks/use-orchestration-store'
 import { AGENT_REGISTRY } from '@/lib/agents/registry'
 import { InboxCountBadge } from '@/components/workspace/inbox-count-badge'
+import { ApprovalCountBadge } from '@/components/workspace/approval-count-badge'
 
 /* ── Agent glyph tones ──────────────────────────────────── */
 const GLYPH_TONES: Record<string, { mark: string; bg: string; fg: string }> = {
@@ -263,7 +264,7 @@ export function Sidebar() {
         <SectionLabel>Workspace</SectionLabel>
         <NavItem href="/workspace" icon="home" label="Overview" />
         <NavItem href="/workspace/inbox" icon="inbox" label="Inbox" badgeNode={<InboxCountBadge />} />
-        <NavItem href="/workspace/approvals" icon="check" label="Approvals" badge="3" accentBadge />
+        <NavItem href="/workspace/approvals" icon="check" label="Approvals" badgeNode={<ApprovalCountBadge />} accentBadge />
         <NavItem href="/workspace/reports" icon="report" label="Reports" />
         <NavItem href="/workspace/analytics" icon="chart" label="Analytics" />
       </div>
